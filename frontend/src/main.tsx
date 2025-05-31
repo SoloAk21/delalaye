@@ -10,10 +10,12 @@ import { store } from "./store/store.ts";
 import Dashboard from "./components/layout/Dashboard.tsx";
 import AdminDashboardPage from "./components/admin/dashboard/DashboardPage.tsx";
 
-import AdminBrokers from './components/admin/brokers/Brokers.tsx'
-import AdminServices from './components/admin/services/Services.tsx'
+import AdminBrokers from "./components/admin/brokers/Brokers.tsx";
+import AdminServices from "./components/admin/services/Services.tsx";
 import Sms from "./components/admin/sms/Sms.tsx";
 import Settings from "./components/admin/settings/Settings.tsx";
+import BrandingProvider from "./components/layout/BrandingProvider.tsx";
+import BrandingSettings from "./components/admin/branding/BrandingSettings.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,9 +26,7 @@ const router = createBrowserRouter([
   //   path: "/login",
   //   element: <Login />,
   // },
-  
-  
-  
+
   {
     path: "/admin",
     element: <Dashboard />,
@@ -54,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/settings",
         element: <Settings />,
+      },
+      {
+        path: "/admin/branding",
+        element: <BrandingSettings />,
       },
       // {
       //   path: "branches",
@@ -86,7 +90,10 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <BrandingProvider>
+        <RouterProvider router={router} />
+      </BrandingProvider>
+
       {/* <Router>
       <App />
     </Router> */}
