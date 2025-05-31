@@ -1,0 +1,201 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+provider = "mysql"
+url      = env("DATABASE_URL_DEV")
+}
+
+//datasource db {
+// provider = "mysql"
+//  url      = env("DATABASE_URL_PROD")
+//}
+
+// role types
+enum Role {
+  admin
+  user
+  staff
+  // Add other status values as needed
+}
+
+enum ConnectionStatus {
+  REQUESTED
+  ACCEPTED
+  DECLINED
+  CANCELLED
+}
+
+enum PackageStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// User schema
+model Staff {
+  id       Int    @id @default(autoincrement())
+  fullName String
+  email    String @unique
+  phone    String @unique
+  photo    String
+  password String
+  role     String
+}
+
+model User {
+  id                 Int          @id @default(autoincrement())
+  googleId           String?      @unique
+  fullName           String
+  email              String       @unique
+  phone              String?      @unique
+  photo              String?      @db.LongText
+  password           String
+  resetOtp           String       @default("")
+  resetOtpExpiration DateTime     @default(now())
+  createdAt          DateTime     @default(now()) @map("created_at")
+  updatedAt          DateTime     @updatedAt @map("updated_at")
+  Connection         Connection[]
+  ratingsGiven       Rating[]
+
+  // Define composite index on the name and createdAt fields
+  @@index(fields: [fullName, createdAt, phone])
+}
+
+model Address {
+  id        Int       @id @default(autoincrement())
+  brokerId  Int?
+  longitude Float?    @default(0)
+  latitude  Float?    @default(0)
+  name      String?
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  broker    Broker?   @relation(fields: [brokerId], references: [id])
+
+  @@index(fields: [brokerId])
+  @@map("addresses")
+}
+
+// Broker schema
+model Broker {
+  id                 Int      @id @default(autoincrement())
+  googleId           String?  @unique
+  fullName           String
+  email              String?  @unique
+  phone              String   @unique
+  password           String
+  photo              String   @db.LongText
+  bio                String?  @db.Text
+  approved           Boolean  @default(false)
+  approvedDate       DateTime @default(now())
+  avilableForWork    Boolean  @default(false)
+  serviceExprireDate DateTime @default(now())
+  locationLongtude   Float    @default(0)
+  locationLatitude   Float    @default(0)
+  hasCar             Boolean  @default(false)
+  resetOtp           String   @default("")
+  resetOtpExpiration DateTime @default(now())
+
+  // Relationships
+  services      Service[]
+  Topup         Topup[]
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  Connection    Connection[]
+  ratings       Rating[]
+  addresses     Address[] // One-to-Many: Broker can have multiple addresses
+  averageRating Float?
+
+  @@index(fields: [fullName, createdAt, phone, approved, locationLatitude, locationLongtude, avilableForWork])
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  rating    Float // The actual rating value (e.g., 4.5)
+  comment   String? // Optional comment from the user giving the rating
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Foreign key relationships
+  brokerId Int
+  broker   Broker @relation(fields: [brokerId], references: [id])
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+}
+
+// Service schema 
+model Service {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  serviceRate Int
+  slug        String @unique
+
+  // Relationships
+  brokers    Broker[]
+  Connection Connection[]
+}
+
+model Topup {
+  id        Int      @id @default(autoincrement())
+  tx_ref    String   @unique
+  broker    Broker   @relation(fields: [brokerId], references: [id])
+  package   Package  @relation(fields: [packageId], references: [id])
+  brokerId  Int
+  packageId Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Connection {
+  id                    Int              @id @default(autoincrement())
+  user                  User             @relation(fields: [userId], references: [id])
+  broker                Broker           @relation(fields: [brokerId], references: [id])
+  service               Service          @relation(fields: [serviceId], references: [id])
+  reasonForCancellation String           @default("")
+  status                ConnectionStatus @default(REQUESTED)
+  locationLongtude      Float            @default(0)
+  locationLatitude      Float            @default(0)
+  userHasCalled         Boolean          @default(false)
+  locationName          String           @default("")
+  createdAt             DateTime         @default(now()) @map("created_at")
+  updatedAt             DateTime         @updatedAt @map("updated_at")
+  userId                Int
+  brokerId              Int
+  serviceId             Int
+}
+
+model Package {
+  id        Int    @id @default(autoincrement())
+  totalDays Float
+  name      String
+  discount  Int
+
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+  Topup     Topup[]
+  status    PackageStatus @default(ACTIVE)
+}
+
+model Settings {
+  id       Int   @id @default(autoincrement())
+  dailyFee Float
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+
+model Branding {
+     id            Int     @id @default(1)
+     logoLight     String?
+     logoDark      String?
+     primaryColor  String
+     secondaryColor String
+     darkModeDefault Boolean @default(false)
+      updatedAt DateTime @updatedAt @map("updated_at")
+   }

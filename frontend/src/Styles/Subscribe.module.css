@@ -1,0 +1,51 @@
+.greendiv{
+    
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #01890d;
+    justify-content: center;
+    height: 300px;
+    width: 90%;
+    margin: 70px auto;
+    border-radius: 30px;
+    & img{
+        margin: 10px;
+        width: 30%;
+        height: auto;
+    }
+    & div{
+        
+        top: 40px;
+        & h1{
+            font-size: 48px;
+            font-weight: 700;
+            color:rgba(252, 252, 252, 1);
+        }
+        width: 50%;
+        & .whitediv{
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-around;
+            width: 40%;
+            height: 50px;
+            background-color: rgba(252, 252, 252, 1);
+            & input{
+             
+                border: none;
+                height: 40px;
+            }
+            & input:focus{
+                outline: none;
+            }
+            & button{
+                padding: 10px;
+                background-color: rgba(64, 64, 64, 1);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                
+            }
+        }
+    }
+}

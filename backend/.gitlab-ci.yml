@@ -1,0 +1,57 @@
+image: docker:latest
+stages:
+  - build-dev
+  - deploy-dev
+  - build-main
+  - deploy-main
+
+variables:
+  CONTAINER_RELEASE_IMAGE: $REGISTRY/$CI_PROJECT_PATH:latest
+  CONTAINER_RELEASE_IMAGE_DEV: $REGISTRY/$CI_PROJECT_PATH:dev
+
+
+build-main:
+  stage: build-main
+  tags:
+   - delalaye
+  script:
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD $REGISTRY
+    - docker build -t $CONTAINER_RELEASE_IMAGE .
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - main
+
+run_docker-main:
+  stage: deploy-main
+  only:
+    - main
+  tags:
+   - delalaye
+  script:
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD $REGISTRY
+    - docker pull $CONTAINER_RELEASE_IMAGE
+    - docker container rm -f delalaye || true
+    - docker run -d -p 8081:5000 --name delalaye --restart unless-stopped $CONTAINER_RELEASE_IMAGE
+
+build-dev:
+  stage: build-dev
+  tags:
+   - delalaye
+  script:
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD $REGISTRY
+    - docker build -t $CONTAINER_RELEASE_IMAGE_DEV .
+    - docker push $CONTAINER_RELEASE_IMAGE_DEV
+  only:
+    - dev
+
+run_docker-dev:
+  stage: deploy-dev
+  only:
+    - dev
+  tags:
+   - delalaye
+  script:
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD $REGISTRY
+    - docker pull $CONTAINER_RELEASE_IMAGE_DEV
+    - docker container rm -f delalaye-dev || true
+    - docker run -d -p 8082:5000 --name delalaye-dev --restart unless-stopped $CONTAINER_RELEASE_IMAGE_DEV

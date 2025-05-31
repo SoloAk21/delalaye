@@ -1,0 +1,20 @@
+- Services
+    - List of services
+    - Add a new service
+    - Edit a service
+- Users
+    - List of users
+    - Delete a user
+- Staffs
+    - List of staffs
+    - Edit a staff
+    - Delete a staff
+- Brokers
+    - List of pending brokers
+    - List of approved brokers
+    - Approve a broker
+    - Edit a broker
+    - Delete a Broker
+
+
+    

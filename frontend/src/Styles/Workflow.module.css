@@ -1,0 +1,26 @@
+.main{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 60px;
+    background:linear-gradient(45deg, #FCFCFC00 0%, #FCFCFC 100%);
+    & .sect1{
+        width: 40%;
+        & h1{
+            font-size: 48px;
+        }
+    }
+    & .workflow{
+        width: 40%;
+        max-width: 578px;
+        min-width: 400;
+        & img{
+            width: 100%;
+            height: auto;
+        }
+    }
+
+
+}

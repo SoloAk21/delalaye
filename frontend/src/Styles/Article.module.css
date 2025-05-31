@@ -1,0 +1,36 @@
+.main{
+    margin: 50px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    & h3{
+        font-size: 24px;
+        font-weight: 700;
+    }
+    & p, a{
+        font-size: 18px;
+        font-weight: 400;
+    }
+    & a{
+        color: rgba(64, 64, 64, 1);
+    }
+    & .section1{
+        max-width: 578px;
+        min-width: 400px;
+        width: 40%;
+
+        & img{
+            width: 100%;
+            height: auto;
+            margin-bottom: 30px;
+        }
+    }
+    & .section2{
+        width: 40%;
+        & h1{
+            font-size: 48px;
+            font-weight: 700;
+        }
+    }
+
+}

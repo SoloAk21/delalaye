@@ -1,0 +1,37 @@
+stages:
+  - deploy
+image: alpine:latest
+
+deploy-main:
+  stage: deploy
+  tags:
+   - delalaye
+  only:
+   - main
+  before_script:
+    - apk update && apk add openssh-client bash rsync
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    
+  script:
+    - mkdir -p ~/.ssh
+    - echo "${SSH_HOST_KEY1}" > ~/.ssh/known_hosts
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - rsync -vv -rz --checksum --delete . root@195.201.35.209:/var/www/html/dashboard
+
+deploy-dev:
+  stage: deploy
+  tags:
+   - delalaye
+  only:
+   - dev
+  before_script:
+    - apk update && apk add openssh-client bash rsync
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    
+  script:
+    - mkdir -p ~/.ssh
+    - echo "${SSH_HOST_KEY1}" > ~/.ssh/known_hosts
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - rsync -vv -rz --checksum --delete . root@195.201.35.209:/var/www/html/dev-dashboard

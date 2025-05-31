@@ -1,0 +1,45 @@
+.header{
+    height: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 18px;
+    margin: 0 20px;
+    & .menu ul{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;     
+        width: 443px;
+        justify-content: center;
+        & li{
+            list-style-type:none;
+        }
+
+    }
+    & .login_register{
+        & a{
+            width: 183px;
+            height: 60px;
+            margin: 0 5px;
+            border-radius: 8px;
+        }
+        & #login{
+            color: #01890D;
+            font-weight: 600;
+            border: 1px solid #01890D;
+            background-color: white;
+        }
+        & #register{
+            background-color: #01890D;
+            color: #FCFCFC;
+            border: none;
+            
+        }
+    }
+}
+@media only screen and (max-width: 1280px){
+    .login_register{
+        display: none;
+    }
+}
