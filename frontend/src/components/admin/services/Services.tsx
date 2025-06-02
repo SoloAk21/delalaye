@@ -1,245 +1,226 @@
-import {  useEffect, useState} from 'react'
-// import {GrFormView} from 'react-icons/gr'
-// import 'slick-carousel/slick/slick.css';
-// import 'slick-carousel/slick/slick-theme.css';
-import {  useAppDispatch, useAppSelector } from '../../../store/store';
-import {  getServices,
-   } from '../../../store/features/serviceSlice';
-import withMainComponent from '../../layout/withMainComponent';
-import {  Service } from '../../../model/models';
-import Popup from '../../layout/Popup';
-import Spinner from '../../layout/Spinner';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../store/store";
+import { getServices } from "../../../store/features/serviceSlice";
+import withMainComponent from "../../layout/withMainComponent";
+import { Service } from "../../../model/models";
+import Popup from "../../layout/Popup";
+import Spinner from "../../layout/Spinner";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { MdAdd } from "react-icons/md";
+import AddService from "./AddService";
+import UpdateService from "./UpdateService";
+import { motion } from "framer-motion";
 
-import Select, {  PropsValue, SingleValue } from 'react-select';
-import AddService from './AddService';
-import UpdateService from './UpdateService';
-
-const Services = () => {
-
+const Services: React.FC = () => {
   return (
-    <div className='shadow p-3 rounded'>
-        <h6 className="font-bold text-secondary">Services</h6>
-
-<div className=""><SevicesList />
+    <div className="p-4 sm:p-6 bg-white dark:bg-boxdark rounded-xl shadow-md min-h-screen">
+      <h6 className="text-lg font-bold text-body dark:text-bodydark mb-4">
+        Services
+      </h6>
+      <ServicesList />
     </div>
-    </div>
-  )
-}
+  );
+};
 
-const SevicesList = () => {
-    const { services,status} = useAppSelector((state) => state.service);
-    const dispatch = useAppDispatch();
-    // const [searchQuery] = useState<string>('');
-    useEffect(() => {
-      dispatch(getServices());
-    }, []);
+const ServicesList: React.FC = () => {
+  const { services, status } = useAppSelector((state) => state.service);
+  const dispatch = useAppDispatch();
   const [updatedService, setUpdatedService] = useState<Service | null>(null);
   const [openUpdatePopup, setOpenUpdatePopup] = useState<boolean>(false);
   const [openAddPopup, setOpenAddPopup] = useState<boolean>(false);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [usersPerPage, setUsersPerPage] = useState<number>(25);
-  const perPageOptions = [25, 50, 75, 100];   
+  const perPageOptions = [25, 50, 75, 100];
+
+  useEffect(() => {
+    dispatch(getServices());
+  }, [dispatch]);
 
   const openInPopup = (service: Service) => {
     setUpdatedService(service);
     setOpenUpdatePopup(true);
   };
 
-  const filteredServices = services.filter(
-    (service) =>
-      service.name?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredServices = services.filter((service) =>
+    service.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const indexOfLastService: number = currentPage * usersPerPage;
-  const indexOfFirstService: number = indexOfLastService - usersPerPage;
-  const paginatedServices: Service[] = filteredServices.slice(
+  const indexOfLastService = currentPage * usersPerPage;
+  const indexOfFirstService = indexOfLastService - usersPerPage;
+  const paginatedServices = filteredServices.slice(
     indexOfFirstService,
     indexOfLastService
   );
-
-  const totalPages: number = Math.ceil(filteredServices.length / usersPerPage);
+  const totalPages = Math.ceil(filteredServices.length / usersPerPage);
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
+
   return (
     <>
-      <div className='w-fit my-2 border  border-slate-400 rounded-sm'>
-        <input
-          type='text'
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder='Search services...'
-          className='text-black w-full px-4 py-2 text-sm'
-        />
-      </div>
-      <div className="flex items-center w-full justify-end ">
-
-      <button
-        onClick={()=>{setOpenAddPopup(true)}}
-        className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold py-1 px-2 rounded text-sm"
+      <div className="flex flex-col  sm:flex-row justify-between items-center gap-4 mb-4">
+        <div className="w-full sm:w-64">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search services..."
+            className="w-full py-2 px-4 border border-stroke dark:border-strokedark rounded-md text-body dark:text-bodydark bg-white dark:bg-boxdark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary text-sm"
+          />
+        </div>
+        <motion.button
+          onClick={() => setOpenAddPopup(true)}
+          className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md text-sm"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-        <MdAdd /> Add new
+          <MdAdd size={20} /> Add Service
+        </motion.button>
+      </div>
 
-      </button>
-          </div>
-      <div className='relative overflow-x-auto shadow-md sm:rounded-lg mt-4'>
-        <table id='registeredUsers' className='w-full text-sm text-left text-gray-800 min-h-30'>
-          <thead className='text-xs text-slate-400 bg-tomoca'>
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg bg-white dark:bg-boxdark">
+        <table className="w-full text-sm text-left text-body dark:text-bodydark">
+          <thead className="bg-whiten dark:bg-boxdark-2">
             <tr>
-              <th scope='col' className='px-6 py-3 text-xs'>
-                No
-              </th>
-              <th scope='col' className='px-6 py-3 text-xs'>
-                Service name
-              </th>
-              <th scope='col' className='px-6 py-3'>
-                Service Rate
-              </th>
-              <th scope='col' className='px-6 py-3'>
-                Action
-              </th>
+              <th className="px-6 py-3 text-xs font-semibold">No</th>
+              <th className="px-6 py-3 text-xs font-semibold">Service Name</th>
+              <th className="px-6 py-3 text-xs font-semibold">Service Rate</th>
+              <th className="px-6 py-3 text-xs font-semibold">Action</th>
             </tr>
           </thead>
           <tbody>
-            {status === 'loading' ? (
+            {status === "loading" ? (
               <tr>
-                <th colSpan={3}>
-                  <Spinner />
-                </th>
+                <td colSpan={4} className="py-6 text-center">
+                  <Spinner width="30px" />
+                </td>
               </tr>
-            ) : (
-              <>
-                {paginatedServices.length ? (
-                  paginatedServices.map((service,index) => (
-                    <tr
-                      key={service.id}
-                      className='bg-white border-b bg-gray-90 border-gray-300'
+            ) : paginatedServices.length ? (
+              paginatedServices.map((service, index) => (
+                <tr
+                  key={service.id}
+                  className="border-b border-stroke dark:border-strokedark hover:bg-primary/5"
+                >
+                  <td className="px-6 py-4 text-xs">
+                    {(currentPage - 1) * usersPerPage + index + 1}
+                  </td>
+                  <td className="px-6 py-4 text-xs">{service.name}</td>
+                  <td className="px-6 py-4 text-xs">{service.serviceRate}</td>
+                  <td className="px-6 py-4">
+                    <motion.button
+                      onClick={() => openInPopup(service)}
+                      className="bg-primary text-white px-3 py-1.5 text-xs rounded-md hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 transition-colors"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      <th
-                        scope='row'
-                        className={`px-6 py-4 font-medium text-gray-900 text-xs `}
-                      >
-                        {index +1}
-                        
-                      </th>
-                      <th scope='row' className='px-6 py-4 font-medium text-gray-900 text-xs'>
-                        {service.name}
-                      </th>
-                      <td className='px-6 py-4 text-xs text-gray-900'>{service.serviceRate}</td>
-                      
-                     
-                      <td>
-                        <button
-                          onClick={() => {
-                            openInPopup(service);
-                          }}
-                          className='font-medium bg-primary text-white px-3 py-1.5 text-xs rounded hover:underline'
-                        >
-                          Edit
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <>
-                    <tr>
-                      <th colSpan={3} className='py-6 text-center'>
-                        No services registered.
-                      </th>
-                    </tr>
-                  </>
-                )}
-              </>
+                      Edit
+                    </motion.button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={4}
+                  className="py-6 text-center text-body dark:text-bodydark"
+                >
+                  No services registered.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
       </div>
-      <div className="flex justify-center mt-4">
-<div className="flex items-center mx-4">
-  <label htmlFor="usersPerPage" className="text-gray-600 text-xs">
-    Lists Per Page:
-  </label>
-  <Select
-    id="usersPerPage"
-    value={usersPerPage ? { value: usersPerPage, label: usersPerPage } as PropsValue<{ value: any; }> : null}
-    onChange={(newValue: SingleValue<{ value: any; }>) => setUsersPerPage(newValue?.value || 0)}
-    options={perPageOptions.map((option) => ({ label: option, value: option }))}
-    isSearchable={false}
-    className="mx-2 focus:ring-secondary border-secondary hover:border-primary focus:border-secondary text-xs"
-    styles={{
-      control: (provided: any) => ({
-        ...provided,
-        border: '1px solid #898989',
-        padding:'0px'
-        
-      }),
-      option: (provided: any, state: { isFocused: any; isSelected: any; }) => ({
-        ...provided,
-        backgroundColor: state.isFocused ? '#FFA05C' : state.isSelected ? '#FFA05C' : 'white',
-        color: state.isFocused || state.isSelected ? 'white' : 'black',
-        
-      }),
-      singleValue: (provided: any) => ({
-        ...provided,
-        color: 'black', // Set the text color for the selected value
-      }),
-      indicatorSeparator: (provided: any, state: { selectProps: { menuIsOpen: any; }; }) => ({
-        ...provided,
-        backgroundColor: state.selectProps.menuIsOpen ? '#FFA05C' : '#FFA05C', // Set the border color when clicked
-      }),
-    }}
-  />
-</div>
 
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4">
+        <div className="flex items-center">
+          <label
+            htmlFor="usersPerPage"
+            className="text-body dark:text-bodydark text-xs mr-2"
+          >
+            Lists Per Page:
+          </label>
+          <select
+            id="usersPerPage"
+            className="py-1.5 px-2 border border-stroke dark:border-strokedark rounded-md text-sm text-body dark:text-bodydark bg-white dark:bg-boxdark focus:outline-none"
+            onChange={(e) => setUsersPerPage(Number(e.target.value))}
+            value={usersPerPage}
+          >
+            {perPageOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex items-center gap-2">
+          <motion.button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-3 py-2 rounded-md ${
+              currentPage === 1
+                ? "bg-gray-200 dark:bg-strokedark text-gray-600 dark:text-gray-400 cursor-not-allowed"
+                : "bg-primary text-white hover:bg-primary/90"
+            }`}
+            whileHover={{ scale: currentPage === 1 ? 1 : 1.05 }}
+            whileTap={{ scale: currentPage === 1 ? 1 : 0.95 }}
+          >
+            <FaArrowLeft size={12} />
+          </motion.button>
+          {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+            const page = currentPage + i;
+            if (page > totalPages) return null;
+            return (
+              <motion.button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`px-3 py-2 rounded-md text-sm ${
+                  currentPage === page
+                    ? "bg-primary text-white"
+                    : "bg-white dark:bg-boxdark text-body dark:text-bodydark border border-stroke dark:border-strokedark hover:bg-primary/10"
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {page}
+              </motion.button>
+            );
+          })}
+          <motion.button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`px-3 py-2 rounded-md ${
+              currentPage === totalPages
+                ? "bg-gray-200 dark:bg-strokedark text-gray-600 dark:text-gray-400 cursor-not-allowed"
+                : "bg-primary text-white hover:bg-primary/90"
+            }`}
+            whileHover={{ scale: currentPage === totalPages ? 1 : 1.05 }}
+            whileTap={{ scale: currentPage === totalPages ? 1 : 0.95 }}
+          >
+            <FaArrowRight size={12} />
+          </motion.button>
+        </div>
+      </div>
 
-  <div className="flex items-center mx-4">
-    <button
-      onClick={() => handlePageChange(currentPage - 1)}
-      disabled={currentPage === 1}
-      className={`px-2 py-2 mx-4 rounded-full ${
-        currentPage === 1 ? 'bg-gray-100 text-gray-600 cursor-not-allowed' : 'bg-primary text-white'
-      }`}
-    >
-      <FaArrowLeft size={12} />
-    </button>
-    {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => (
-      <button
-        key={i}
-        onClick={() => handlePageChange(currentPage + i)}
-        className={`flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border  border-gray-300 hover:bg-gray-100  ${
-          currentPage === currentPage + i ? 'text-primary bg-primary/25' : 'bg-gray-100 text-gray-600'
-        }`}
-      >
-        {currentPage + i}
-      </button>
-    ))}
-    <button
-      onClick={() => handlePageChange(currentPage + 5)}
-      disabled={currentPage + 5 > totalPages}
-      className={`px-2 py-2 rounded-full mx-4 ${
-        currentPage + 5 > totalPages ? 'bg-gray-100 text-gray-600 cursor-not-allowed' : 'bg-primary text-white'
-      }`}
-    >
-      <FaArrowRight size={12} />
-    </button>
-  </div>
-</div>
-<Popup title='Add service' open={openAddPopup} setOpen={setOpenAddPopup}>
-          <AddService  setOpenUpdatePopup={setOpenAddPopup} />
-        </Popup>
+      <Popup title="Add Service" open={openAddPopup} setOpen={setOpenAddPopup}>
+        <AddService setOpenUpdatePopup={setOpenAddPopup} />
+      </Popup>
       {updatedService && (
-        <Popup title='Update service' open={openUpdatePopup} setOpen={setOpenUpdatePopup}>
-          <UpdateService service={updatedService} setOpenUpdatePopup={setOpenUpdatePopup} />
+        <Popup
+          title="Update Service"
+          open={openUpdatePopup}
+          setOpen={setOpenUpdatePopup}
+        >
+          <UpdateService
+            service={updatedService}
+            setOpenUpdatePopup={setOpenUpdatePopup}
+          />
         </Popup>
       )}
     </>
   );
 };
 
-
- 
 export default withMainComponent(Services);

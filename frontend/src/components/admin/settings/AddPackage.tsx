@@ -1,120 +1,143 @@
-import React, {  useState } from "react";
-// import { addBranchAccount, updateBranch } from '../../../store/features/branchSlice';
+import React, { useState } from "react";
 import { NewPackage } from "../../../model/models";
 import { useAppDispatch, useAppSelector } from "../../../store/store";
 import Spinner from "../../layout/Spinner";
 import { addPackage } from "../../../store/features/settingSlice";
+import { motion } from "framer-motion";
+
 interface Props {
-    setOpenUpdatePopup: React.Dispatch<React.SetStateAction<boolean>>;
-  }
+  setOpenUpdatePopup: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const AddPackage: React.FC<Props> = ({setOpenUpdatePopup}) => {
- 
-
-
+const AddPackage: React.FC<Props> = ({ setOpenUpdatePopup }) => {
   const [values, setValues] = useState<NewPackage>({
     name: "",
     totalDays: 0,
-    discount: 0,status:"ACTIVE"
+    discount: 0,
+    status: "ACTIVE",
   });
-  const { status } = useAppSelector((state) => state.service);
+  const { status } = useAppSelector((state) => state.setting);
   const dispatch = useAppDispatch();
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
     setValues({
       ...values,
-      [name]: value,
+      [name]:
+        name === "totalDays" || name === "discount" ? Number(value) : value,
     });
   };
 
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("will submit");
-    console.log(values)
-    dispatch(addPackage({
-      ...values,
-      setOpenUpdatePopup:setOpenUpdatePopup
-    }))
+    dispatch(addPackage({ ...values, setOpenUpdatePopup }));
   };
 
   return (
-    <div className="p-6">
-      <form action="" onSubmit={handleSubmit} className="py-4  rounded ">
-      <h3 className="block text-sm mb-2 font-bold">Package Name</h3>
-        <input
-          type="text"
-          placeholder=''
-          name="name"
-          value={values.name}
-          onChange={handleInputChange}
-          className="items-center border border-gray-500 rounded-md w-1/4 py-2 px-4 focus:outline-yellow-500"
-          required
-        />
+    <div className="p-4 sm:p-6 bg-white dark:bg-boxdark rounded-xl">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-body dark:text-bodydark mb-1">
+            Package Name
+          </label>
+          <input
+            type="text"
+            placeholder="Enter package name"
+            name="name"
+            value={values.name}
+            onChange={handleInputChange}
+            className="w-full py-2 px-4 border border-stroke dark:border-strokedark rounded-md text-body dark:text-bodydark bg-white dark:bg-boxdark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
+            required
+          />
+        </div>
 
-        <h3 className="block text-sm mb-2 mt-4 font-bold">Total days for this package</h3>
-        <input
-          type="number"
-          placeholder=''
-          value={values.totalDays}
-          name="totalDays"
-          onChange={handleInputChange}
-          className="items-center border border-gray-500 rounded-md w-1/4 py-2 px-4 focus:outline-yellow-500"
-          required
-        />
+        <div>
+          <label className="block text-sm font-medium text-body dark:text-bodydark mb-1">
+            Total Days
+          </label>
+          <input
+            type="number"
+            placeholder="Enter total days"
+            name="totalDays"
+            value={values.totalDays}
+            onChange={handleInputChange}
+            className="w-full py-2 px-4 border border-stroke dark:border-strokedark rounded-md text-body dark:text-bodydark bg-white dark:bg-boxdark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
+            required
+          />
+        </div>
 
-        <h3 className="block text-sm mb-2 mt-4 font-bold">Discount</h3>
-        <input
-          type="number"
-          placeholder='Type message...'
-          value={values.discount}
-          onChange={handleInputChange}
-          className="items-center border border-gray-500 rounded-md w-1/4 py-2 px-4 focus:outline-yellow-500"
-          required
-        />
-      <h3 className="block text-sm mb-2 mt-4 font-bold">Active</h3>
-      <button
-        type='button'
-        onClick={()=>setValues({...values,
-        status: values.status==='ACTIVE'?'INACTIVE':'ACTIVE'})}
-      className={`
-        rounded-full overflow-hidden relative border border-gray-300 w-11 h-6 
-        ${values.status==='ACTIVE' ? 'bg-primary hover:bg-primary/95' : 'bg-gray-200'}
-      `}
-    >
-      <div
-        className={`
-          h-4 w-4 rounded-lg transition-transform transition-background mx-1 items-center
-          ${values.status==='ACTIVE'  ? 'bg-white transform translate-x-full' : 'bg-gray-400 transform translate-x-0'}
-        `}
-      />
-    </button>
-<div className="flex gap-4 items-center mt-4">
-    <button
-          onClick={() => {
-            setOpenUpdatePopup(false);
-            setValues({
-              name:'',
-              totalDays:0,
-              discount:0,
-              status:'ACTIVE'
-            });
-          }}
-          className="font-medium border border-primary text-primary px-3 py-1.5 text-sm rounded hover:underline"
-        >
-          Cancel
-        </button>
+        <div>
+          <label className="block text-sm font-medium text-body dark:text-bodydark mb-1">
+            Discount
+          </label>
+          <input
+            type="number"
+            placeholder="Enter discount amount"
+            name="discount"
+            value={values.discount}
+            onChange={handleInputChange}
+            className="w-full py-2 px-4 border border-stroke dark:border-strokedark rounded-md text-body dark:text-bodydark bg-white dark:bg-boxdark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
+            required
+          />
+        </div>
 
-        <button
-          className="text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded text-sm px-4 py-2 "
-          disabled={status === "loading"}
-          type="submit"
-        >
-          {status === "loading" && <Spinner width="20px" />} Add
-        </button>
-</div>
-        
+        <div>
+          <label className="flex items-center gap-3 text-sm font-medium text-body dark:text-bodydark">
+            Active
+            <button
+              type="button"
+              onClick={() =>
+                setValues({
+                  ...values,
+                  status: values.status === "ACTIVE" ? "INACTIVE" : "ACTIVE",
+                })
+              }
+              className={`rounded-full relative border border-stroke dark:border-strokedark w-11 h-6 ${
+                values.status === "ACTIVE"
+                  ? "bg-primary hover:bg-primary/90"
+                  : "bg-gray-200 dark:bg-strokedark"
+              }`}
+            >
+              <div
+                className={`h-4 w-4 rounded-lg transition-transform mx-1 bg-white ${
+                  values.status === "ACTIVE"
+                    ? "transform translate-x-full"
+                    : "transform translate-x-0"
+                }`}
+              />
+            </button>
+          </label>
+        </div>
+
+        <div className="flex gap-4 items-center mt-4">
+          <motion.button
+            type="button"
+            onClick={() => {
+              setOpenUpdatePopup(false);
+              setValues({
+                name: "",
+                totalDays: 0,
+                discount: 0,
+                status: "ACTIVE",
+              });
+            }}
+            className="font-medium border border-primary text-primary dark:text-primary px-4 py-2 rounded-md text-sm hover:bg-primary/10 transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Cancel
+          </motion.button>
+          <motion.button
+            type="submit"
+            className="flex items-center gap-2 text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 font-medium rounded-md text-sm px-4 py-2 disabled:opacity-50"
+            disabled={status === "loading"}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {status === "loading" && <Spinner width="20px" />}
+            Add
+          </motion.button>
+        </div>
       </form>
     </div>
   );

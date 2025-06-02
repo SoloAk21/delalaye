@@ -42,105 +42,105 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
   const adminNavigation = (
     <>
       <li
-        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 ${
+        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           dashboardMatchAdmin
             ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
         }`}
       >
-        <LuLayoutDashboard />
+        <LuLayoutDashboard className="text-lg" />
         <NavLink
-          className="text-sm md:text-base text-center flex items-center w-full justify-between"
+          className="text-sm md:text-base flex items-center w-full justify-between"
           to="/admin/dashboard/"
         >
           Dashboard <IoIosArrowForward />
         </NavLink>
       </li>
       <li
-        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 ${
+        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           adminBrokersRoute
             ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
         }`}
       >
-        <LuUsers />
+        <LuUsers className="text-lg" />
         <NavLink
-          className="text-sm md:text-base text-center flex items-center w-full justify-between"
+          className="text-sm md:text-base flex items-center w-full justify-between"
           to="/admin/brokers/"
         >
           Brokers <IoIosArrowForward />
         </NavLink>
       </li>
       <li
-        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 ${
+        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           adminServicesRoute
             ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
         }`}
       >
-        <MdOutlineMiscellaneousServices />
+        <MdOutlineMiscellaneousServices className="text-lg" />
         <NavLink
-          className="text-sm md:text-base text-center flex items-center w-full justify-between"
+          className="text-sm md:text-base flex items-center w-full justify-between"
           to="/admin/services/"
         >
           Services <IoIosArrowForward />
         </NavLink>
       </li>
       <li
-        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 ${
+        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           adminStaffRoute
             ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
         }`}
       >
-        <RiAdminFill />
+        <RiAdminFill className="text-lg" />
         <NavLink
-          className="text-sm md:text-base text-center flex items-center w-full justify-between"
+          className="text-sm md:text-base flex items-center w-full justify-between"
           to="/admin/staff/"
         >
           Staff <IoIosArrowForward />
         </NavLink>
       </li>
       <li
-        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 ${
+        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           adminSmsRoute
             ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
         }`}
       >
-        <MdOutlineMessage />
+        <MdOutlineMessage className="text-lg" />
         <NavLink
-          className="text-sm md:text-base text-center flex items-center w-full justify-between"
+          className="text-sm md:text-base flex items-center w-full justify-between"
           to="/admin/sms/"
         >
           Sms <IoIosArrowForward />
         </NavLink>
       </li>
       <li
-        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 ${
+        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           adminSettingRoute
             ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
         }`}
       >
-        <IoSettingsOutline />
+        <IoSettingsOutline className="text-lg" />
         <NavLink
-          className="text-sm md:text-base text-center flex items-center w-full justify-between"
+          className="text-sm md:text-base flex items-center w-full justify-between"
           to="/admin/settings/"
         >
           Settings <IoIosArrowForward />
         </NavLink>
       </li>
       <li
-        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 ${
+        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           adminBrandingRoute
             ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
         }`}
       >
-        <FaPalette />
+        <FaPalette className="text-lg" />
         <NavLink
-          className="text-sm md:text-base text-center flex items-center w-full justify-between"
+          className="text-sm md:text-base flex items-center w-full justify-between"
           to="/admin/branding/"
         >
           Branding <IoIosArrowForward />
@@ -152,45 +152,45 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
   const financeNavigation = (
     <>
       <li
-        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 ${
+        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           dashboardMatchFinance
             ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
         }`}
       >
-        <LuLayoutDashboard />
+        <LuLayoutDashboard className="text-lg" />
         <NavLink
-          className="text-sm md:text-base text-center flex items-center w-full justify-between"
+          className="text-sm md:text-base flex items-center w-full justify-between"
           to="/finance/dashboard/"
         >
           Dashboard <IoIosArrowForward />
         </NavLink>
       </li>
       <li
-        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 ${
+        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           financePaymentsRoute
             ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
         }`}
       >
-        <MdOutlineMiscellaneousServices />
+        <MdOutlineMiscellaneousServices className="text-lg" />
         <NavLink
-          className="text-sm md:text-base text-center flex items-center w-full justify-between"
+          className="text-sm md:text-base flex items-center w-full justify-between"
           to="/finance/payments/"
         >
           Payments <IoIosArrowForward />
         </NavLink>
       </li>
       <li
-        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 ${
+        className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           financePaymentHistoryRoute
             ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
         }`}
       >
-        <MdOutlineMessage />
+        <MdOutlineMessage className="text-lg" />
         <NavLink
-          className="text-sm md:text-base text-center flex items-center w-full justify-between"
+          className="text-sm md:text-base flex items-center w-full justify-between"
           to="/finance/payment-history/"
         >
           History <IoIosArrowForward />
@@ -200,13 +200,13 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
   );
 
   return (
-    <>
+    <div className="flex min-h-screen">
       <div
         id="sidebar"
-        className="bg-white dark:bg-boxdark h-full fixed top-0 left-0 w-24 md:w-56 flex flex-col p-2 md:p-4 shadow-card border-r border-gray-200 dark:border-gray-700"
+        className="bg-white dark:bg-boxdark h-full fixed top-0 left-0 w-20 md:w-64 flex flex-col p-2 md:p-4 shadow-card border-r border-stroke dark:border-strokedark z-50"
       >
-        <div className="my-8">
-          <NavLink to="/" className="font-medium text-white">
+        <div className="my-6 md:my-8">
+          <NavLink to="/" className="font-medium">
             <img
               className="m-auto max-h-12 object-contain"
               src={logoSrc}
@@ -223,9 +223,11 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
           </ul>
         </nav>
       </div>
-      <Outlet />
-      <Toaster />
-    </>
+      <div className="flex-1 ml-20 md:ml-64 bg-whiten dark:bg-boxdark-2 min-h-screen">
+        <Outlet />
+      </div>
+      <Toaster richColors position="top-right" />
+    </div>
   );
 };
 

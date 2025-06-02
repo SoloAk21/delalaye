@@ -1,10 +1,6 @@
-import React from 'react';
-// import Button from './Button';
-import { MdClose } from 'react-icons/md';
-// import PopAlert from './Layout/PopAlert';
-
-
-
+import React from "react";
+import { MdClose } from "react-icons/md";
+import { motion } from "framer-motion";
 
 interface Props {
   title: string;
@@ -13,37 +9,36 @@ interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Popup: React.FC<Props> = (props: Props) => {
-
-  const { title, children, open, setOpen } = props;
-
-
+const Popup: React.FC<Props> = ({ title, children, open, setOpen }) => {
   return (
     <div
-      className={`${open ? 'block' : 'hidden'} fixed inset-0 z-50 overflow-auto bg-[#8080802e]`}
+      className={`${
+        open ? "flex" : "hidden"
+      } fixed inset-0 z-50 overflow-auto bg-black/30 items-center justify-center p-4 sm:p-6`}
     >
-
-      <div className={`flex flex-col items-center justify-center p-10 bg-slate-100 m-10 rounded`}>
-        {/* <PopAlert /> */}
-        <div className='flex items-center justify-between w-full border-b-2'>
-          <h6 style={{ flexGrow: 1 }}>
+      <motion.div
+        className="flex flex-col w-full max-w-lg bg-white dark:bg-boxdark rounded-xl shadow-md"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: open ? 1 : 0, scale: open ? 1 : 0.95 }}
+        transition={{ duration: 0.2 }}
+      >
+        <div className="flex items-center justify-between w-full border-b border-stroke dark:border-strokedark p-4">
+          <h6 className="text-lg font-medium text-body dark:text-bodydark flex-grow">
             {title}
           </h6>
-          <button onClick={()=>{setOpen(false);}} className={`text-white bg-primary hover:bg-primary/90 focus:ring-4 focus:outline-none font-medium rounded text-sm px-5 py-2.5 text-center inline-flex items-center  mr-2 mb-4 `}>
-          <MdClose />
-
-    </button>
-
-
+          <motion.button
+            onClick={() => setOpen(false)}
+            className="text-white bg-primary hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 font-medium rounded-md text-sm p-2"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <MdClose size={20} />
+          </motion.button>
         </div>
-        <div className='mt-4 w-full'>
-          <>
-            {children}
-          </>
-        </div>
-      </div>
+        <div className="p-4 w-full">{children}</div>
+      </motion.div>
     </div>
   );
-}
+};
 
 export default Popup;

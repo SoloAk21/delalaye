@@ -1,68 +1,105 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../../store/store'
-import { logout } from '../../store/features/authSlice';
-import { MdLogout } from 'react-icons/md';
-import {FaRegUserCircle} from 'react-icons/fa'
-const Header= () => {
-  const { user } = useAppSelector(state => state.auth);
+import React, { useEffect, useRef, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { logout } from "../../store/features/authSlice";
+import { MdLogout } from "react-icons/md";
+import { FaRegUserCircle } from "react-icons/fa";
+import { BsMoonStars, BsSun } from "react-icons/bs";
+import { motion } from "framer-motion";
+
+const Header: React.FC = () => {
+  const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  const [open, setOpen] = useState<boolean>(false);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    const savedMode = localStorage.getItem("darkMode");
+    if (savedMode !== null) {
+      return JSON.parse(savedMode);
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  useOutsideAlerter(wrapperRef, setOpen);
 
-  const [open,setOpen]= useState<boolean>(false)
-  const wrapperRef = useRef(null);
-  useOutsideAlerter(wrapperRef,setOpen);
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("darkMode", JSON.stringify(true));
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("darkMode", JSON.stringify(false));
+    }
+  }, [isDarkMode]);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev);
+  };
+
   return (
-    <div className='bg-white h-16 mb-3 w-full relative ' >
-      <div className='flex justify-end gap-2 items-center h-full mr-6'>
-        <p  className='text-sm text-slate-500'>{user?.fullName}
-          {/* {(user?.role === 'main' || user?.role === 'store') && user?.fullname} */}
-          {/* {user?.role === 'branch' && user?.branch?.branch_name} */}
-
+    <header className="bg-white dark:bg-boxdark h-16 w-full shadow-md flex items-center justify-end px-6 mb-3 z-50">
+      <div className="flex items-center gap-3">
+        <p className="text-sm font-medium text-body dark:text-bodydark">
+          {user?.fullName}
         </p>
-        <div ref={wrapperRef}>
-<button onClick={()=>{setOpen(!open)}} >
-  <FaRegUserCircle />
-       </button> 
-      <div id="dropdown" className={`z-10${open ?" ":' hidden'} absolute right-4 top-[72px] bg-white divide-y divide-gray-100 rounded-lg shadow w-44 `}>
-    <ul className="py-2 text-sm text-slate-800 " aria-labelledby="dropdownDefaultButton">
-      {/* <li>
-        <Link to={`/${user?.role}/profile`} className="px-4 py-2 hover:bg-gray-100 flex gap-2 items-center"><MdOutlineManageAccounts /> Account</Link>
-      </li> */}
-      <li>
-        <button onClick={() => {
-          dispatch(logout())
-        }} className=" px-4 py-2 hover:bg-gray-100 flex gap-2 items-center w-full"><MdLogout /> Logout</button>
-      </li>
-   
-    </ul>
-</div>
+        <div ref={wrapperRef} className="relative">
+          <motion.button
+            onClick={() => setOpen(!open)}
+            className="text-body dark:text-bodydark hover:text-primary dark:hover:text-primary focus:outline-none"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <FaRegUserCircle size={24} />
+          </motion.button>
+          <motion.div
+            id="dropdown"
+            className={`absolute right-0 top-10 z-50 w-44 bg-white dark:bg-boxdark border border-stroke dark:border-strokedark rounded-lg shadow-lg divide-y divide-stroke dark:divide-strokedark ${
+              open ? "block" : "hidden"
+            }`}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: open ? 1 : 0, y: open ? 0 : -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <ul className="py-2 text-sm text-body dark:text-bodydark">
+              <li>
+                <button
+                  onClick={toggleDarkMode}
+                  className="w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors"
+                >
+                  {isDarkMode ? <BsSun size={16} /> : <BsMoonStars size={16} />}
+                  {isDarkMode ? "Light Mode" : "Dark Mode"}
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => dispatch(logout())}
+                  className="w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors"
+                >
+                  <MdLogout size={16} /> Logout
+                </button>
+              </li>
+            </ul>
+          </motion.div>
         </div>
-      
       </div>
-    </div>
-  )
+    </header>
+  );
+};
+
+/**
+ * Hook to detect clicks outside of the passed ref
+ */
+function useOutsideAlerter(
+  ref: React.RefObject<HTMLElement>,
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+) {
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [ref, setOpen]);
 }
 
 export default Header;
-
-
-/**
- * Hook that alerts clicks outside of the passed ref
-//  */
-function useOutsideAlerter(ref:any,setOpen:React.Dispatch<React.SetStateAction<boolean>>) {
-  useEffect(() => {
-    /**
-     * Alert if clicked on outside of element
-     */
-    function handleClickOutside(event:any) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        setOpen(false)
-      }
-    }
-    // Bind the event listener
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [ref,setOpen]);
-}

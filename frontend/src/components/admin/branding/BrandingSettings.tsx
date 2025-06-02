@@ -15,6 +15,8 @@ const BrandingSettings = () => {
     dispatch(fetchBranding());
   }, [dispatch]);
 
+  console.log("Branding Settings:", branding);
+
   return (
     <div className="shadow p-3 rounded">
       <h6 className="font-bold text-secondary">Branding Settings</h6>

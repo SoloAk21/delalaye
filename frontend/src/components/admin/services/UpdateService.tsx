@@ -1,145 +1,126 @@
 import React, { useEffect, useState } from "react";
-// import { addBranchAccount, updateBranch } from '../../../store/features/branchSlice';
 import { Service } from "../../../model/models";
 import { useAppDispatch, useAppSelector } from "../../../store/store";
 import Spinner from "../../layout/Spinner";
 import { updateService } from "../../../store/features/serviceSlice";
+import { motion } from "framer-motion";
 
 interface Props {
   service: Service;
   setOpenUpdatePopup: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-
-const UpdateService: React.FC<Props> = (props: Props) => {
-  const { service, setOpenUpdatePopup } = props;
-
+const UpdateService: React.FC<Props> = ({ service, setOpenUpdatePopup }) => {
   const [values, setValues] = useState<Service>({
-    id:0,
-    name:'',
-    description: '',
-    serviceRate:0
+    id: 0,
+    name: "",
+    description: "",
+    serviceRate: 0,
   });
   const { status } = useAppSelector((state) => state.service);
   const dispatch = useAppDispatch();
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    setValues({
-      ...values,
-      [name]: value,
-    });
-  };
 
   useEffect(() => {
     if (service) {
-      const {id, name,description,serviceRate } = service;
-
       setValues({
-       id, name,description,serviceRate
+        id: service.id,
+        name: service.name,
+        description: service.description || "",
+        serviceRate: service.serviceRate,
       });
     }
   }, [service]);
 
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setValues({
+      ...values,
+      [name]: name === "serviceRate" ? Number(value) : value,
+    });
+  };
+
   const handleUpdate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("will update");
-    console.log(values)
-    if(service){
-    dispatch(updateService({updatedService:values,setOpenUpdatePopup}))    
-    }
-    
+    dispatch(updateService({ updatedService: values, setOpenUpdatePopup }));
   };
 
   return (
-    <div className="p-6">
-      <form action="" onSubmit={handleUpdate} className="py-4  rounded ">
-        <div className="relative z-0 w-full mb-6 group">
+    <div className="p-4 sm:p-6 bg-white dark:bg-boxdark rounded-xl">
+      <form onSubmit={handleUpdate} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-body dark:text-bodydark mb-1">
+            Service Name *
+          </label>
           <input
             type="text"
             name="name"
             id="name"
-            className="block py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-slate-300 appearance-none focus:outline-none focus:ring-0 focus:border-b-rose-950 peer"
-            placeholder=" "
+            className="w-full py-2 px-4 border border-stroke dark:border-strokedark rounded-md text-body dark:text-bodydark bg-white dark:bg-boxdark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
+            placeholder="Enter service name"
             required
             value={values.name}
-            onChange={(e) => {
-              handleInputChange(e);
-            }}
+            onChange={handleInputChange}
           />
-          <label
-            htmlFor="name"
-            className="peer-focus:font-medium absolute text-sm text-slate-500  duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-b-rose-950 peer-focus:dark:text-amber-950 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >
-            Service name
-          </label>
         </div>
-        <div className="relative z-0 w-full mb-6 group">
-          <input
-            type="text"
-            name="description"
-            id="description"
-            className="block py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-slate-300 appearance-none focus:outline-none focus:ring-0 focus:border-b-rose-950 peer"
-            placeholder=" "
-            required
-            value={values.description}
-            onChange={(e) => {
-              handleInputChange(e);
-            }}
-          />
-          <label
-            htmlFor="description"
-            className="peer-focus:font-medium absolute text-sm text-slate-500  duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-b-rose-950 peer-focus:dark:text-amber-950 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >
+        <div>
+          <label className="block text-sm font-medium text-body dark:text-bodydark mb-1">
             Description
           </label>
+          <textarea
+            name="description"
+            id="description"
+            className="w-full py-2 px-4 border border-stroke dark:border-strokedark rounded-md text-body dark:text-bodydark bg-white dark:bg-boxdark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
+            placeholder="Enter description"
+            value={values.description}
+            onChange={handleInputChange}
+          />
         </div>
-        <div className="relative z-0 w-full mb-6 group">
+        <div>
+          <label className="block text-sm font-medium text-body dark:text-bodydark mb-1">
+            Service Rate *
+          </label>
           <input
             type="number"
             name="serviceRate"
             id="serviceRate"
-            className="block py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-slate-300 appearance-none focus:outline-none focus:ring-0 focus:border-b-rose-950 peer"
-            placeholder=" "
+            className="w-full py-2 px-4 border border-stroke dark:border-strokedark rounded-md text-body dark:text-bodydark bg-white dark:bg-boxdark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
+            placeholder="Enter service rate"
             required
             value={values.serviceRate}
-            onChange={(e) => {
-              handleInputChange(e);
-            }}
+            onChange={handleInputChange}
           />
-          <label
-            htmlFor="serviceRate"
-            className="peer-focus:font-medium absolute text-sm text-slate-500  duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-b-rose-950 peer-focus:dark:text-amber-950 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >
-            Service Rate
-          </label>
         </div>
-  
-<div className="flex gap-4 items-center">
-    <button
-          onClick={() => {
-            setOpenUpdatePopup(false);
-            setValues({
-                id:0,
-              name: " ",
-              description: "",
-              serviceRate: 0
-            });
-          }}
-          className="font-medium border border-primary text-primary px-4 py-2 rounded hover:underline"
-        >
-          Cancel
-        </button>
-
-        <button
-          className="text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded text-sm px-4 py-2 "
-          disabled={status === "loading"}
-          type="submit"
-        >
-          {status === "loading" && <Spinner width="20px" />} Update
-        </button>
-</div>
-        
+        <div className="flex gap-4 items-center mt-4">
+          <motion.button
+            type="button"
+            onClick={() => {
+              setOpenUpdatePopup(false);
+              setValues({
+                id: 0,
+                name: "",
+                description: "",
+                serviceRate: 0,
+              });
+            }}
+            className="font-medium border border-primary text-primary dark:text-primary px-4 py-2 rounded-md text-sm hover:bg-primary/10 transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Cancel
+          </motion.button>
+          <motion.button
+            type="submit"
+            className="flex items-center gap-2 text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 font-medium rounded-md text-sm px-4 py-2 disabled:opacity-50"
+            disabled={status === "loading"}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {status === "loading" && <Spinner width="20px" />}
+            Update
+          </motion.button>
+        </div>
       </form>
     </div>
   );

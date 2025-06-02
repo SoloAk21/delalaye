@@ -4,7 +4,6 @@ import { updateBranding } from "../../../store/features/brandingSlice";
 import Spinner from "../../layout/Spinner";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-
 import { FiUpload } from "react-icons/fi";
 import { Branding } from "../../../model/models";
 
@@ -17,12 +16,12 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
   const dispatch = useAppDispatch();
 
   const [values, setValues] = useState<Partial<Branding>>({
-    primaryColor: "#FFA05C",
-    secondaryColor: "#898989",
+    primaryColor: "#3C50E0",
+    secondaryColor: "#64748B",
     darkModeDefault: false,
   });
-  const [primaryColorInput, setPrimaryColorInput] = useState("#FFA05C");
-  const [secondaryColorInput, setSecondaryColorInput] = useState("#898989");
+  const [primaryColorInput, setPrimaryColorInput] = useState("#3C50E0");
+  const [secondaryColorInput, setSecondaryColorInput] = useState("#64748B");
   const [logoLight, setLogoLight] = useState<File | null>(null);
   const [logoDark, setLogoDark] = useState<File | null>(null);
   const [logoLightPreview, setLogoLightPreview] = useState<string | null>(null);
@@ -31,24 +30,39 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
   useEffect(() => {
     if (branding) {
       setValues({
-        primaryColor: branding.primaryColor,
-        secondaryColor: branding.secondaryColor,
-        darkModeDefault: branding.darkModeDefault,
+        primaryColor: branding.primaryColor || "#3C50E0",
+        secondaryColor: branding.secondaryColor || "#64748B",
+        darkModeDefault: branding.darkModeDefault || false,
       });
-      setPrimaryColorInput(branding.primaryColor);
-      setSecondaryColorInput(branding.secondaryColor);
-      setLogoLightPreview(branding.logoLight || null);
-      setLogoDarkPreview(branding.logoDark || null);
+      setPrimaryColorInput(branding.primaryColor || "#3C50E0");
+      setSecondaryColorInput(branding.secondaryColor || "#64748B");
+      setLogoLightPreview(
+        branding.logoLight
+          ? `${import.meta.env.VITE_API_URL}${branding.logoLight}`
+          : null
+      );
+      setLogoDarkPreview(
+        branding.logoDark
+          ? `${import.meta.env.VITE_API_URL}${branding.logoDark}`
+          : null
+      );
     }
   }, [branding]);
 
   useEffect(() => {
-    // Clean up object URLs
     return () => {
-      if (logoLightPreview && !branding?.logoLight)
+      if (
+        logoLightPreview &&
+        (!branding?.logoLight || logoLightPreview.startsWith("blob:"))
+      ) {
         URL.revokeObjectURL(logoLightPreview);
-      if (logoDarkPreview && !branding?.logoDark)
+      }
+      if (
+        logoDarkPreview &&
+        (!branding?.logoDark || logoDarkPreview.startsWith("blob:"))
+      ) {
         URL.revokeObjectURL(logoDarkPreview);
+      }
     };
   }, [logoLightPreview, logoDarkPreview, branding]);
 
@@ -60,7 +74,7 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
       if (input.length === 4) {
         return `#${input[1]}${input[1]}${input[2]}${input[2]}${input[3]}${input[3]}`;
       }
-      return input;
+      return input.toUpperCase();
     } else if (rgbRegex.test(input)) {
       const match = input.match(rgbRegex);
       if (match) {
@@ -158,14 +172,14 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
   };
 
   return (
-    <div className="p-4 sm:p-6">
+    <div className="p-4 sm:p-6 bg-white dark:bg-boxdark rounded-xl ">
       <form onSubmit={handleSubmit} className="py-4 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:gap-8">
           {/* Primary Color */}
           <div className="relative z-0 w-full sm:w-1/2 group">
             <label
               htmlFor="primaryColor"
-              className="block mb-1 text-sm text-slate-500 dark:text-gray-400"
+              className="block mb-1 text-sm font-medium text-body dark:text-bodydark"
             >
               Primary Color
             </label>
@@ -174,7 +188,7 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
                 type="color"
                 value={values.primaryColor}
                 onChange={(e) => handleColorPickerChange(e, "primary")}
-                className="w-10 h-10 rounded-md border cursor-pointer"
+                className="w-10 h-10 rounded-md border border-stroke dark:border-strokedark cursor-pointer"
               />
               <input
                 type="text"
@@ -182,8 +196,8 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
                 id="primaryColor"
                 value={primaryColorInput}
                 onChange={(e) => handleColorInputChange(e, "primary")}
-                placeholder="e.g., #098761 or rgb(9, 135, 97)"
-                className="block py-2 px-3 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+                placeholder="e.g., #3C50E0 or rgb(60, 80, 224)"
+                className="block py-2 px-3 w-full text-sm text-body dark:text-bodydark bg-transparent border border-stroke dark:border-strokedark rounded-md focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
               />
             </div>
           </div>
@@ -192,7 +206,7 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
           <div className="relative z-0 w-full sm:w-1/2 group">
             <label
               htmlFor="secondaryColor"
-              className="block mb-1 text-sm text-slate-500 dark:text-gray-400"
+              className="block mb-1 text-sm font-medium text-body dark:text-bodydark"
             >
               Secondary Color
             </label>
@@ -201,7 +215,7 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
                 type="color"
                 value={values.secondaryColor}
                 onChange={(e) => handleColorPickerChange(e, "secondary")}
-                className="w-10 h-10 rounded-md border cursor-pointer"
+                className="w-10 h-10 rounded-md border border-stroke dark:border-strokedark cursor-pointer"
               />
               <input
                 type="text"
@@ -209,19 +223,23 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
                 id="secondaryColor"
                 value={secondaryColorInput}
                 onChange={(e) => handleColorInputChange(e, "secondary")}
-                placeholder="e.g., #098761 or rgb(9, 135, 97)"
-                className="block py-2 px-3 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+                placeholder="e.g., #64748B or rgb(100, 116, 139)"
+                className="block py-2 px-3 w-full text-sm text-body dark:text-bodydark bg-transparent border border-stroke dark:border-strokedark rounded-md focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
               />
             </div>
           </div>
         </div>
+
+        {/* Dark Mode Toggle */}
         <div className="pb-4 relative z-0 w-full group">
-          <label className="flex items-center gap-3 text-sm text-slate-500">
+          <label className="flex items-center gap-3 text-sm font-medium text-body dark:text-bodydark">
             Dark Mode Default
             <motion.div
-              className="relative w-12 h-6 rounded-full bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50"
+              className="relative w-12 h-6 rounded-full bg-gray-200 dark:bg-strokedark"
               animate={{
-                backgroundColor: values.darkModeDefault ? "#FFA05C" : "#E5E7EB",
+                backgroundColor: values.darkModeDefault
+                  ? "var(--primary)"
+                  : "var(--secondary)",
               }}
               transition={{ duration: 0.2 }}
             >
@@ -236,19 +254,27 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
                 aria-label="Toggle dark mode default"
               />
               <motion.div
-                className="absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full border border-gray-300 dark:border-gray-600"
+                className="absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full border border-stroke dark:border-strokedark"
                 animate={{ x: values.darkModeDefault ? 24 : 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               />
             </motion.div>
           </label>
         </div>
+
+        {/* Logo Light Upload */}
         <div className="relative z-0 w-full group">
+          <label
+            htmlFor="logoLight"
+            className="block mb-1 text-sm font-medium text-body dark:text-bodydark"
+          >
+            Logo Light (PNG/SVG, max 2MB)
+          </label>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
               <label
                 htmlFor="logoLight"
-                className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary font-medium rounded-md cursor-pointer hover:bg-primary/20 focus:ring-2 focus:ring-primary/50 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary dark:text-primary font-medium rounded-md cursor-pointer hover:bg-primary/20 focus:ring-2 focus:ring-primary/50 transition-colors"
               >
                 <FiUpload size={16} />
                 Choose Logo Light
@@ -262,7 +288,7 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
                   aria-label="Upload logo light"
                 />
               </label>
-              <span className="text-sm text-gray-900 dark:text-gray-300">
+              <span className="text-sm text-body dark:text-bodydark">
                 {logoLight ? logoLight.name : "No file chosen"}
               </span>
             </div>
@@ -275,24 +301,26 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
                 <img
                   src={logoLightPreview}
                   alt="Logo Light Preview"
-                  className="max-h-24 object-contain rounded-md border border-gray-300 dark:border-gray-600"
+                  className="max-h-24 object-contain rounded-md border border-stroke dark:border-strokedark"
                 />
               </motion.div>
             )}
           </div>
-          <label
-            htmlFor="logoLight"
-            className="peer-focus:font-medium absolute text-sm text-slate-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-1 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >
-            Logo Light (PNG/SVG, max 2MB)
-          </label>
         </div>
+
+        {/* Logo Dark Upload */}
         <div className="relative z-0 w-full group">
+          <label
+            htmlFor="logoDark"
+            className="block mb-1 text-sm font-medium text-body dark:text-bodydark"
+          >
+            Logo Dark (PNG/SVG, max 2MB)
+          </label>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
               <label
                 htmlFor="logoDark"
-                className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary font-medium rounded-md cursor-pointer hover:bg-primary/20 focus:ring-2 focus:ring-primary/50 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary dark:text-primary font-medium rounded-md cursor-pointer hover:bg-primary/20 focus:ring-2 focus:ring-primary/50 transition-colors"
               >
                 <FiUpload size={16} />
                 Choose Logo Dark
@@ -306,7 +334,7 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
                   aria-label="Upload logo dark"
                 />
               </label>
-              <span className="text-sm text-gray-900 dark:text-gray-300">
+              <span className="text-sm text-body dark:text-bodydark">
                 {logoDark ? logoDark.name : "No file chosen"}
               </span>
             </div>
@@ -319,23 +347,19 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
                 <img
                   src={logoDarkPreview}
                   alt="Logo Dark Preview"
-                  className="max-h-24 object-contain rounded-md border border-gray-300 dark:border-gray-600"
+                  className="max-h-24 object-contain rounded-md border border-stroke dark:border-strokedark"
                 />
               </motion.div>
             )}
           </div>
-          <label
-            htmlFor="logoDark"
-            className="peer-focus:font-medium absolute text-sm text-slate-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-1 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >
-            Logo Dark (PNG/SVG, max 2MB)
-          </label>
         </div>
+
+        {/* Form Actions */}
         <div className="flex flex-col sm:flex-row gap-4 items-center">
           <motion.button
             type="button"
             onClick={() => setOpenUpdatePopup(false)}
-            className="font-medium border border-primary text-primary px-4 py-2 rounded hover:underline w-full sm:w-auto"
+            className="font-medium border border-primary text-primary dark:text-primary px-4 py-2 rounded hover:bg-primary/10 w-full sm:w-auto transition-colors"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -343,7 +367,7 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
           </motion.button>
           <motion.button
             type="submit"
-            className="text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-4 focus:ring-primary/50 font-medium rounded text-sm px-4 py-2 w-full sm:w-auto flex items-center gap-2"
+            className="text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 font-medium rounded text-sm px-4 py-2 w-full sm:w-auto flex items-center gap-2"
             disabled={status === "loading"}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
