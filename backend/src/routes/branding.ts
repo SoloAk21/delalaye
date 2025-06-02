@@ -7,9 +7,9 @@ import multer from "multer";
 
 const router = express.Router();
 
-// Configure multer for file uploads
+const storage = multer.memoryStorage();
 const upload = multer({
-  dest: "uploads/",
+  storage,
   fileFilter: (req, file, cb) => {
     const allowedTypes = ["image/png", "image/svg+xml"];
     if (!allowedTypes.includes(file.mimetype)) {
@@ -18,7 +18,7 @@ const upload = multer({
     cb(null, true);
   },
   limits: { fileSize: 2 * 1024 * 1024 }, // 2MB limit
-}); // Remove .fields() to allow multer to process all fields
+});
 
 // @route   GET api/branding
 // @desc    Get branding settings

@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { PrismaClient, Prisma } from "@prisma/client";
 import NodeCache from "node-cache";
+import cloudinary from "../../config/cloudinary";
+import { log } from "console";
 
 const prisma = new PrismaClient();
 const cache = new NodeCache({ stdTTL: 3600 }); // 1-hour TTL
@@ -25,27 +27,44 @@ const getBranding = async (req: Request, res: Response) => {
 
 const updateBranding = async (req: Request, res: Response) => {
   try {
-    console.log("Request files:", req.files); // Debug log
     const { primaryColor, secondaryColor, darkModeDefault } = req.body;
     const files = (req.files as Express.Multer.File[]) || [];
+    console.log("Received files:", files);
 
-    const fileMap: { [key: string]: Express.Multer.File } = {};
-    files.forEach((file) => {
-      const fieldname = file.fieldname.trim(); // Trim whitespace from fieldname
-      fileMap[fieldname] = file;
-    });
+    const uploadToCloudinary = async (fileBuffer: Buffer, filename: string) => {
+      return new Promise<{ url: string }>((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            { resource_type: "image", folder: "branding", public_id: filename },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve({ url: result?.secure_url || "" });
+            }
+          )
+          .end(fileBuffer);
+      });
+    };
+
+    const fileMap: { [key: string]: string } = {};
+
+    for (const file of files) {
+      const trimmedFieldName = file.fieldname.trim();
+      const uploaded = await uploadToCloudinary(
+        file.buffer,
+        trimmedFieldName + "-" + Date.now()
+      );
+      fileMap[trimmedFieldName] = uploaded.url;
+    }
 
     const brandingData = {
-      logoLight: fileMap["logoLight"]
-        ? `/uploads/${fileMap["logoLight"].filename}`
-        : undefined,
-      logoDark: fileMap["logoDark"]
-        ? `/uploads/${fileMap["logoDark"].filename}`
-        : undefined,
+      logoLight: fileMap["logoLight"],
+      logoDark: fileMap["logoDark"],
       primaryColor,
       secondaryColor,
       darkModeDefault: darkModeDefault === "true" || darkModeDefault === true,
     };
+
+    console.log("Branding data to update:", brandingData);
 
     if (
       !brandingData.primaryColor ||
@@ -66,10 +85,6 @@ const updateBranding = async (req: Request, res: Response) => {
     cache.del("branding");
     res.json(branding);
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.error("Prisma error:", error.meta?.target);
-      return res.status(400).json({ errors: [{ msg: "Database error" }] });
-    }
     console.error("Update branding error:", error);
     res.status(500).send("Server Error");
   }

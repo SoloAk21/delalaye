@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Logo from "../../assets/logo.png";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { fetchUser, login } from "../../store/features/authSlice";
+import { fetchBranding } from "../../store/features/brandingSlice"; // Import fetchBranding
 import Alert from "../layout/Alert";
 import Spinner from "../layout/Spinner";
 import { motion } from "framer-motion";
@@ -11,14 +12,17 @@ const Login: React.FC = () => {
   const { isAuthenticated, status, user } = useAppSelector(
     (state) => state.auth
   );
+  const { branding } = useAppSelector((state) => state.branding); // Get branding from store
   const dispatch = useAppDispatch();
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
 
+  // Fetch branding data on mount
   useEffect(() => {
     dispatch(fetchUser());
+    dispatch(fetchBranding()); // Fetch branding data
   }, [dispatch]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,10 +38,19 @@ const Login: React.FC = () => {
     dispatch(login(values));
   };
 
+  // Redirect based on user role
   if (status === "idle" && isAuthenticated) {
     if (user?.role === "admin") return <Navigate to="/admin/dashboard" />;
     if (user?.role === "finance") return <Navigate to="/finance/dashboard" />;
   }
+
+  // Determine logo source based on theme
+  const isDarkMode = document.documentElement.classList.contains("dark");
+  const logoSrc = branding
+    ? isDarkMode
+      ? branding.logoDark || Logo
+      : branding.logoLight || Logo
+    : Logo;
 
   return (
     <>
@@ -48,7 +61,12 @@ const Login: React.FC = () => {
             <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-10">
               <div className="text-center">
                 <Link to="/" className="mb-6 inline-block">
-                  <img src={Logo} alt="Logo" className="w-40" />
+                  <img
+                    src={logoSrc}
+                    alt="Delalaye Broker Logo"
+                    className="w-40 object-contain"
+                    loading="lazy"
+                  />{" "}
                 </Link>
                 <p className="text-body dark:text-bodydark text-sm px-4 lg:px-12">
                   Brokered Connections, Endless Possibilities: Where Your Needs

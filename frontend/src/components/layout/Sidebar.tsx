@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, Outlet, useMatch } from "react-router-dom";
 import { Toaster } from "sonner";
 import { IoIosArrowForward } from "react-icons/io";
@@ -19,8 +19,30 @@ interface Props {
 
 const Sidebar: React.FC<Props> = ({ role }: Props) => {
   const { branding } = useAppSelector((state) => state.branding);
-  const isDarkMode = document.documentElement.classList.contains("dark");
 
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(
+    document.documentElement.classList.contains("dark")
+  );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const dark = document.documentElement.classList.contains("dark");
+      setIsDarkMode(dark);
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const logoSrc = branding
+    ? isDarkMode
+      ? branding.logoDark || Logo
+      : branding.logoLight || Logo
+    : Logo;
   const dashboardMatchAdmin = useMatch("/admin/dashboard/");
   const adminBrokersRoute = useMatch("/admin/brokers/");
   const adminStaffRoute = useMatch("/admin/staff/");
@@ -32,12 +54,6 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
   const dashboardMatchFinance = useMatch("/finance/dashboard/");
   const financePaymentsRoute = useMatch("/finance/payments/");
   const financePaymentHistoryRoute = useMatch("/finance/payment-history/");
-
-  const logoSrc = branding
-    ? isDarkMode
-      ? branding.logoDark || Logo
-      : branding.logoLight || Logo
-    : Logo;
 
   const adminNavigation = (
     <>
