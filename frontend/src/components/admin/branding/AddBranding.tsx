@@ -72,7 +72,7 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
 
     if (hexRegex.test(input)) {
       if (input.length === 4) {
-        return `#${input[1]}${input[1]}${input[2]}${input[2]}${input[3]}${input[3]}`;
+        return `#${input[1]}${input[1]}${input[2]}${input[2]}${input[3]}${input[3]}`.toUpperCase();
       }
       return input.toUpperCase();
     } else if (rgbRegex.test(input)) {
@@ -172,11 +172,11 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
   };
 
   return (
-    <div className="p-4 sm:p-6 bg-white dark:bg-boxdark rounded-xl ">
+    <div className="p-4 sm:p-6 bg-white dark:bg-boxdark rounded-xl relative">
       <form onSubmit={handleSubmit} className="py-4 space-y-6">
+        {/* Color Inputs */}
         <div className="flex flex-col sm:flex-row sm:items-start sm:gap-8">
-          {/* Primary Color */}
-          <div className="relative z-0 w-full sm:w-1/2 group">
+          <div className="w-full sm:w-1/2">
             <label
               htmlFor="primaryColor"
               className="block mb-1 text-sm font-medium text-body dark:text-bodydark"
@@ -192,18 +192,15 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
               />
               <input
                 type="text"
-                name="primaryColor"
                 id="primaryColor"
                 value={primaryColorInput}
                 onChange={(e) => handleColorInputChange(e, "primary")}
                 placeholder="e.g., #3C50E0 or rgb(60, 80, 224)"
-                className="block py-2 px-3 w-full text-sm text-body dark:text-bodydark bg-transparent border border-stroke dark:border-strokedark rounded-md focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
+                className="block py-2 px-3 w-full text-sm bg-transparent border border-stroke dark:border-strokedark rounded-md text-body dark:text-bodydark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
               />
             </div>
           </div>
-
-          {/* Secondary Color */}
-          <div className="relative z-0 w-full sm:w-1/2 group">
+          <div className="w-full sm:w-1/2">
             <label
               htmlFor="secondaryColor"
               className="block mb-1 text-sm font-medium text-body dark:text-bodydark"
@@ -219,65 +216,88 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
               />
               <input
                 type="text"
-                name="secondaryColor"
                 id="secondaryColor"
                 value={secondaryColorInput}
                 onChange={(e) => handleColorInputChange(e, "secondary")}
                 placeholder="e.g., #64748B or rgb(100, 116, 139)"
-                className="block py-2 px-3 w-full text-sm text-body dark:text-bodydark bg-transparent border border-stroke dark:border-strokedark rounded-md focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
+                className="block py-2 px-3 w-full text-sm bg-transparent border border-stroke dark:border-strokedark rounded-md text-body dark:text-bodydark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
               />
             </div>
           </div>
         </div>
 
         {/* Dark Mode Toggle */}
-        <div className="pb-4 relative z-0 w-full group">
-          <label className="flex items-center gap-3 text-sm font-medium text-body dark:text-bodydark">
+        <div className="pb-4">
+          <label className="flex items-center gap-3 text-sm font-medium text-body dark:text-bodydark cursor-pointer">
             Dark Mode Default
             <motion.div
-              className="relative w-12 h-6 rounded-full bg-gray-200 dark:bg-strokedark"
+              className="relative w-12 h-6 rounded-full"
               animate={{
                 backgroundColor: values.darkModeDefault
-                  ? "var(--primary)"
-                  : "var(--secondary)",
+                  ? values.primaryColor || "#3C50E0"
+                  : "#E5E7EB",
               }}
-              transition={{ duration: 0.2 }}
-            >
-              <motion.input
-                type="checkbox"
-                name="darkModeDefault"
-                checked={values.darkModeDefault}
-                onChange={(e) =>
-                  setValues({ ...values, darkModeDefault: e.target.checked })
+              transition={{ duration: 0.3 }}
+              onClick={() =>
+                setValues({
+                  ...values,
+                  darkModeDefault: !values.darkModeDefault,
+                })
+              }
+              role="switch"
+              tabIndex={0}
+              aria-checked={values.darkModeDefault}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setValues({
+                    ...values,
+                    darkModeDefault: !values.darkModeDefault,
+                  });
                 }
-                className="sr-only peer"
-                aria-label="Toggle dark mode default"
-              />
+              }}
+            >
               <motion.div
-                className="absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full border border-stroke dark:border-strokedark"
-                animate={{ x: values.darkModeDefault ? 24 : 0 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="absolute top-1 left-1 w-4 h-4 rounded-full bg-white shadow-md"
+                layout
+                transition={{ type: "spring", stiffness: 700, damping: 30 }}
+                style={{ x: values.darkModeDefault ? 24 : 0 }}
               />
             </motion.div>
           </label>
         </div>
 
-        {/* Logo Light Upload */}
-        <div className="relative z-0 w-full group">
-          <label
-            htmlFor="logoLight"
-            className="block mb-1 text-sm font-medium text-body dark:text-bodydark"
-          >
-            Logo Light (PNG/SVG, max 2MB)
-          </label>
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-4">
+        {/* Instruction Text */}
+        <p className="text-sm text-body dark:text-bodydark mb-2">
+          tap on the boxes to add your custom logos
+        </p>
+
+        {/* Uploads with Labels */}
+        <div className="flex gap-4">
+          {/* Light Logo */}
+          <div className="w-24">
+            <div className="h-24 relative group">
               <label
                 htmlFor="logoLight"
-                className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary dark:text-primary font-medium rounded-md cursor-pointer hover:bg-primary/20 focus:ring-2 focus:ring-primary/50 transition-colors"
+                className="flex items-center justify-center w-full h-full border-2 border-dashed border-primary rounded-lg cursor-pointer bg-primary/5 dark:bg-primary/10 hover:border-primary transition-colors"
               >
-                <FiUpload size={16} />
-                Choose Logo Light
+                <div className="relative w-full h-full flex items-center justify-center">
+                  {(logoLightPreview === null || logoLightPreview === undefined) && (
+                    <span
+                      style={{ fontSize: "40px", color: "#3C50E0", zIndex: 10 }}
+                    >
+                      +
+                    </span>
+                  )}
+                  {logoLightPreview && (
+                    <img
+                      src={logoLightPreview}
+                      alt="Light Logo"
+                      className="absolute top-0 left-0 w-full h-full object-contain rounded-lg bg-white dark:bg-slate-800"
+                      onError={(e) => (e.currentTarget.style.display = "none")}
+                    />
+                  )}
+                </div>
                 <input
                   type="file"
                   name="logoLight"
@@ -288,42 +308,36 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
                   aria-label="Upload logo light"
                 />
               </label>
-              <span className="text-sm text-body dark:text-bodydark">
-                {logoLight ? logoLight.name : "No file chosen"}
-              </span>
             </div>
-            {logoLightPreview && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <img
-                  src={logoLightPreview}
-                  alt="Logo Light Preview"
-                  className="max-h-24 object-contain rounded-md border border-stroke dark:border-strokedark"
-                />
-              </motion.div>
-            )}
+            <p className="mt-1 text-center text-xs text-body dark:text-bodydark">
+              Light Logo
+            </p>
           </div>
-        </div>
 
-        {/* Logo Dark Upload */}
-        <div className="relative z-0 w-full group">
-          <label
-            htmlFor="logoDark"
-            className="block mb-1 text-sm font-medium text-body dark:text-bodydark"
-          >
-            Logo Dark (PNG/SVG, max 2MB)
-          </label>
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-4">
+          {/* Dark Logo */}
+          <div className="w-24">
+            <div className="h-24 relative group">
               <label
                 htmlFor="logoDark"
-                className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary dark:text-primary font-medium rounded-md cursor-pointer hover:bg-primary/20 focus:ring-2 focus:ring-primary/50 transition-colors"
+                className="flex items-center justify-center w-full h-full border-2 border-dashed border-primary rounded-lg cursor-pointer bg-primary/5 dark:bg-primary/10 hover:border-primary transition-colors"
               >
-                <FiUpload size={16} />
-                Choose Logo Dark
+                <div className="relative w-full h-full flex items-center justify-center">
+                  {(logoDarkPreview === null || logoDarkPreview === undefined) && (
+                    <span
+                      style={{ fontSize: "40px", color: "#3C50E0", zIndex: 10 }}
+                    >
+                      +
+                    </span>
+                  )}
+                  {logoDarkPreview && (
+                    <img
+                      src={logoDarkPreview}
+                      alt="Dark Logo"
+                      className="absolute top-0 left-0 w-full h-full object-contain rounded-lg bg-white dark:bg-slate-800"
+                      onError={(e) => (e.currentTarget.style.display = "none")}
+                    />
+                  )}
+                </div>
                 <input
                   type="file"
                   name="logoDark"
@@ -334,48 +348,21 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
                   aria-label="Upload logo dark"
                 />
               </label>
-              <span className="text-sm text-body dark:text-bodydark">
-                {logoDark ? logoDark.name : "No file chosen"}
-              </span>
             </div>
-            {logoDarkPreview && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <img
-                  src={logoDarkPreview}
-                  alt="Logo Dark Preview"
-                  className="max-h-24 object-contain rounded-md border border-stroke dark:border-strokedark"
-                />
-              </motion.div>
-            )}
+            <p className="mt-1 text-center text-xs text-body dark:text-bodydark">
+              Dark Logo
+            </p>
           </div>
         </div>
 
-        {/* Form Actions */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center">
-          <motion.button
-            type="button"
-            onClick={() => setOpenUpdatePopup(false)}
-            className="font-medium border border-primary text-primary dark:text-primary px-4 py-2 rounded hover:bg-primary/10 w-full sm:w-auto transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Cancel
-          </motion.button>
-          <motion.button
-            type="submit"
-            className="text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 font-medium rounded text-sm px-4 py-2 w-full sm:w-auto flex items-center gap-2"
-            disabled={status === "loading"}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {status === "loading" && <Spinner width="20px" />}
-            Update Branding
-          </motion.button>
-        </div>
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="inline-flex justify-center items-center rounded-md bg-primary px-4 py-2 text-white hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {status === "loading" ? <Spinner /> : "Save Branding"}
+        </button>
       </form>
     </div>
   );

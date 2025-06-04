@@ -5,6 +5,7 @@ import withMainComponent from "../../layout/withMainComponent";
 import Popup from "../../layout/Popup";
 import AddBranding from "./AddBranding";
 import Spinner from "../../layout/Spinner";
+import { Pencil } from "lucide-react";
 
 const BrandingSettings = () => {
   const { branding, status } = useAppSelector((state) => state.branding);
@@ -24,85 +25,93 @@ const BrandingSettings = () => {
         {status === "loading" ? (
           <Spinner />
         ) : branding ? (
-          <div className="bg-white dark:bg-boxdark rounded-xl shadow-card border border-gray-200 dark:border-gray-700 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+          <div className="bg-white dark:bg-boxdark rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-8 space-y-6 max-w-4xl mx-auto">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 Current Branding
               </h3>
               <button
                 onClick={() => setOpenUpdatePopup(true)}
-                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold py-1 px-2 rounded text-sm"
+                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-4 rounded-lg text-sm transition"
+                aria-label="Update Branding"
               >
+                <Pencil className="w-4 h-4" />
                 Update Branding
               </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+              {/* Primary Color */}
               <div>
-                <label className="block text-sm text-slate-500 mb-2">
+                <label className="block text-sm font-medium text-gray-500 mb-1">
                   Primary Color
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                   <div
-                    className="w-10 h-10 rounded-md"
+                    className="w-12 h-12 rounded-md border border-gray-300 dark:border-gray-600"
                     style={{ backgroundColor: branding.primaryColor }}
-                  ></div>
-                  <span className="text-sm text-gray-900 dark:text-gray-300">
+                  />
+                  <span className="text-base font-medium text-gray-900 dark:text-gray-300">
                     {branding.primaryColor}
                   </span>
                 </div>
               </div>
+
+              {/* Secondary Color */}
               <div>
-                <label className="block text-sm text-slate-500 mb-2">
+                <label className="block text-sm font-medium text-gray-500 mb-1">
                   Secondary Color
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                   <div
-                    className="w-10 h-10 rounded-md"
+                    className="w-12 h-12 rounded-md border border-gray-300 dark:border-gray-600"
                     style={{ backgroundColor: branding.secondaryColor }}
-                  ></div>
-                  <span className="text-sm text-gray-900 dark:text-gray-300">
+                  />
+                  <span className="text-base font-medium text-gray-900 dark:text-gray-300">
                     {branding.secondaryColor}
                   </span>
                 </div>
               </div>
+
+              {/* Dark Mode Default */}
               <div>
-                <label className="block text-sm text-slate-500 mb-2">
+                <label className="block text-sm font-medium text-gray-500 mb-1">
                   Dark Mode Default
                 </label>
-                <span className="text-sm text-gray-900 dark:text-gray-300">
+                <span className="text-base font-medium text-gray-900 dark:text-gray-300">
                   {branding.darkModeDefault ? "Enabled" : "Disabled"}
                 </span>
               </div>
+
+              {/* Logo Light */}
               <div>
-                <label className="block text-sm text-slate-500 mb-2">
+                <label className="block text-sm font-medium text-gray-500 mb-1">
                   Logo Light
                 </label>
                 {branding.logoLight ? (
                   <img
                     src={branding.logoLight}
                     alt="Light Logo"
-                    className="h-12 object-contain"
+                    className="h-16 object-contain rounded-md border border-gray-300 dark:border-gray-600 p-1 bg-white dark:bg-gray-800"
                   />
                 ) : (
-                  <span className="text-sm text-gray-900 dark:text-gray-300">
-                    No logo
-                  </span>
+                  <span className="text-sm text-gray-400">No logo uploaded</span>
                 )}
               </div>
+
+              {/* Logo Dark */}
               <div>
-                <label className="block text-sm text-slate-500 mb-2">
+                <label className="block text-sm font-medium text-gray-500 mb-1">
                   Logo Dark
                 </label>
                 {branding.logoDark ? (
                   <img
                     src={branding.logoDark}
                     alt="Dark Logo"
-                    className="h-12 object-contain"
+                    className="h-16 object-contain rounded-md border border-gray-300 dark:border-gray-600 p-1 bg-white dark:bg-gray-800"
                   />
                 ) : (
-                  <span className="text-sm text-gray-900 dark:text-gray-300">
-                    No logo
-                  </span>
+                  <span className="text-sm text-gray-400">No logo uploaded</span>
                 )}
               </div>
             </div>
@@ -111,6 +120,7 @@ const BrandingSettings = () => {
           <div className="text-center py-6">No branding settings found.</div>
         )}
       </div>
+
       <Popup
         title="Update Branding"
         open={openUpdatePopup}

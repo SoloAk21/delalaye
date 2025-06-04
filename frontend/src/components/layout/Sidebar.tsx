@@ -60,8 +60,8 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
       <li
         className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           dashboardMatchAdmin
-            ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
+            ? "bg-primary/10 dark:bg-primary/20 font-medium text-primary dark:text-blue-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5 dark:hover:bg-primary/10"
         }`}
       >
         <LuLayoutDashboard className="text-lg" />
@@ -75,8 +75,8 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
       <li
         className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           adminBrokersRoute
-            ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
+            ? "bg-primary/10 dark:bg-primary/20 font-medium text-primary dark:text-blue-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5 dark:hover:bg-primary/10"
         }`}
       >
         <LuUsers className="text-lg" />
@@ -90,8 +90,8 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
       <li
         className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           adminServicesRoute
-            ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
+            ? "bg-primary/10 dark:bg-primary/20 font-medium text-primary dark:text-blue-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5 dark:hover:bg-primary/10"
         }`}
       >
         <MdOutlineMiscellaneousServices className="text-lg" />
@@ -105,8 +105,8 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
       <li
         className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           adminStaffRoute
-            ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
+            ? "bg-primary/10 dark:bg-primary/20 font-medium text-primary dark:text-blue-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5 dark:hover:bg-primary/10"
         }`}
       >
         <RiAdminFill className="text-lg" />
@@ -120,8 +120,8 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
       <li
         className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           adminSmsRoute
-            ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
+            ? "bg-primary/10 dark:bg-primary/20 font-medium text-primary dark:text-blue-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5 dark:hover:bg-primary/10"
         }`}
       >
         <MdOutlineMessage className="text-lg" />
@@ -135,8 +135,8 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
       <li
         className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           adminSettingRoute
-            ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
+            ? "bg-primary/10 dark:bg-primary/20 font-medium text-primary dark:text-blue-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5 dark:hover:bg-primary/10"
         }`}
       >
         <IoSettingsOutline className="text-lg" />
@@ -150,8 +150,8 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
       <li
         className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           adminBrandingRoute
-            ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
+            ? "bg-primary/10 dark:bg-primary/20 font-medium text-primary dark:text-blue-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5 dark:hover:bg-primary/10"
         }`}
       >
         <FaPalette className="text-lg" />
@@ -170,8 +170,8 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
       <li
         className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           dashboardMatchFinance
-            ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
+            ? "bg-primary/10 dark:bg-primary/20 font-medium text-primary dark:text-blue-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5 dark:hover:bg-primary/10"
         }`}
       >
         <LuLayoutDashboard className="text-lg" />
@@ -185,8 +185,8 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
       <li
         className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           financePaymentsRoute
-            ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
+            ? "bg-primary/10 dark:bg-primary/20 font-medium text-primary dark:text-blue-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5 dark:hover:bg-primary/10"
         }`}
       >
         <MdOutlineMiscellaneousServices className="text-lg" />
@@ -200,8 +200,8 @@ const Sidebar: React.FC<Props> = ({ role }: Props) => {
       <li
         className={`flex flex-col md:flex-row gap-1 md:gap-2 items-center rounded p-2 transition-colors duration-200 ${
           financePaymentHistoryRoute
-            ? "bg-primary/10 font-medium text-primary"
-            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5"
+            ? "bg-primary/10 dark:bg-primary/20 font-medium text-primary dark:text-blue-300"
+            : "text-gray-600 dark:text-gray-300 hover:bg-primary/5 dark:hover:bg-primary/10"
         }`}
       >
         <MdOutlineMessage className="text-lg" />
