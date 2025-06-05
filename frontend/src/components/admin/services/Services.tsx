@@ -14,9 +14,9 @@ import { motion } from "framer-motion";
 const Services: React.FC = () => {
   return (
     <div className="p-4 md:p-6 bg-whiten dark:bg-boxdark-2 min-h-screen">
-      <h1 className="text-xl font-medium text-secondary dark:text-bodydark mb-4">
+      <h6 className="text-lg font-semibold text-body dark:text-bodydark mb-4">
         Services
-      </h1>
+      </h6>
       <ServicesList />
     </div>
   );

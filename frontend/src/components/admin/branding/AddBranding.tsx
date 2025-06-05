@@ -305,7 +305,7 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
 
               <label
                 htmlFor={id}
-                className="flex items-center justify-center gap-2 w-full h-12 px-4 text-sm font-medium text-white bg-primary rounded-lg cursor-pointer hover:bg-primary-dark transition-all duration-200 dark:bg-blue-600 dark:hover:bg-blue-700"
+                className="flex items-center justify-center gap-2 w-full h-12 px-4 text-sm font-medium text-white bg-primary hover:bg-primary-dark rounded-lg cursor-pointer transition-all duration-200"
               >
                 <FiUpload className="w-4 h-4" />
                 Upload {label}
