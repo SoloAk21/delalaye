@@ -4,8 +4,16 @@ import { updateBranding } from "../../../store/features/brandingSlice";
 import Spinner from "../../layout/Spinner";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { FiUpload } from "react-icons/fi";
-import { Branding } from "../../../model/models";
+import { FiUpload, FiImage } from "react-icons/fi";
+
+// Define the Branding interface if not imported from elsewhere
+interface Branding {
+  primaryColor: string;
+  secondaryColor: string;
+  darkModeDefault: boolean;
+  logoLight?: string;
+  logoDark?: string;
+}
 
 interface Props {
   setOpenUpdatePopup: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,6 +35,7 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
   const [logoLightPreview, setLogoLightPreview] = useState<string | null>(null);
   const [logoDarkPreview, setLogoDarkPreview] = useState<string | null>(null);
 
+  // Initialize with branding slice data
   useEffect(() => {
     if (branding) {
       setValues({
@@ -36,35 +45,28 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
       });
       setPrimaryColorInput(branding.primaryColor || "#3C50E0");
       setSecondaryColorInput(branding.secondaryColor || "#64748B");
-      setLogoLightPreview(
-        branding.logoLight
-          ? `${import.meta.env.VITE_API_URL}${branding.logoLight}`
-          : null
-      );
-      setLogoDarkPreview(
-        branding.logoDark
-          ? `${import.meta.env.VITE_API_URL}${branding.logoDark}`
-          : null
-      );
+
+      // Set previews from branding slice (only if URLs are valid and not already set)
+      if (branding.logoLight && !logoLightPreview) {
+        setLogoLightPreview(branding.logoLight);
+      }
+      if (branding.logoDark && !logoDarkPreview) {
+        setLogoDarkPreview(branding.logoDark);
+      }
     }
   }, [branding]);
 
+  // Clean up object URLs when component unmounts or previews change
   useEffect(() => {
     return () => {
-      if (
-        logoLightPreview &&
-        (!branding?.logoLight || logoLightPreview.startsWith("blob:"))
-      ) {
+      if (logoLightPreview && logoLightPreview.startsWith("blob:")) {
         URL.revokeObjectURL(logoLightPreview);
       }
-      if (
-        logoDarkPreview &&
-        (!branding?.logoDark || logoDarkPreview.startsWith("blob:"))
-      ) {
+      if (logoDarkPreview && logoDarkPreview.startsWith("blob:")) {
         URL.revokeObjectURL(logoDarkPreview);
       }
     };
-  }, [logoLightPreview, logoDarkPreview, branding]);
+  }, [logoLightPreview, logoDarkPreview]);
 
   const validateAndConvertColor = (input: string): string | null => {
     const hexRegex = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
@@ -140,7 +142,10 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
         toast.error("File size must be less than 2MB");
         return;
       }
+
+      // Create temporary preview URL
       const previewUrl = URL.createObjectURL(file);
+
       if (type === "light") {
         setLogoLight(file);
         setLogoLightPreview(previewUrl);
@@ -267,99 +272,88 @@ const AddBranding: React.FC<Props> = ({ setOpenUpdatePopup }) => {
           </label>
         </div>
 
-        {/* Instruction Text */}
-        <p className="text-sm text-body dark:text-bodydark mb-2">
-          tap on the boxes to add your custom logos
-        </p>
-
-        {/* Uploads with Labels */}
-        <div className="flex gap-4">
-          {/* Light Logo */}
-          <div className="w-24">
-            <div className="h-24 relative group">
+        {/* File Uploads */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {(
+            [
+              {
+                label: "Light Logo",
+                id: "logoLight",
+                preview: logoLightPreview,
+                type: "light" as "light",
+              },
+              {
+                label: "Dark Logo",
+                id: "logoDark",
+                preview: logoDarkPreview,
+                type: "dark" as "dark",
+              },
+            ] as {
+              label: string;
+              id: string;
+              preview: string | null;
+              type: "light" | "dark";
+            }[]
+          ).map(({ label, id, preview, type }) => (
+            <div key={id}>
               <label
-                htmlFor="logoLight"
-                className="flex items-center justify-center w-full h-full border-2 border-dashed border-primary rounded-lg cursor-pointer bg-primary/5 dark:bg-primary/10 hover:border-primary transition-colors"
+                htmlFor={id}
+                className="block mb-2 text-sm font-semibold text-gray-700 dark:text-white"
               >
-                <div className="relative w-full h-full flex items-center justify-center">
-                  {(logoLightPreview === null || logoLightPreview === undefined) && (
-                    <span
-                      style={{ fontSize: "40px", color: "#3C50E0", zIndex: 10 }}
-                    >
-                      +
-                    </span>
-                  )}
-                  {logoLightPreview && (
-                    <img
-                      src={logoLightPreview}
-                      alt="Light Logo"
-                      className="absolute top-0 left-0 w-full h-full object-contain rounded-lg bg-white dark:bg-slate-800"
-                      onError={(e) => (e.currentTarget.style.display = "none")}
-                    />
-                  )}
-                </div>
+                {label}
+              </label>
+
+              <label
+                htmlFor={id}
+                className="flex items-center justify-center gap-2 w-full h-12 px-4 text-sm font-medium text-white bg-primary rounded-lg cursor-pointer hover:bg-primary-dark transition-all duration-200 dark:bg-blue-600 dark:hover:bg-blue-700"
+              >
+                <FiUpload className="w-4 h-4" />
+                Upload {label}
                 <input
+                  id={id}
                   type="file"
-                  name="logoLight"
-                  id="logoLight"
                   accept="image/png,image/svg+xml"
-                  onChange={(e) => handleFileChange(e, "light")}
+                  onChange={(e) => handleFileChange(e, type)}
                   className="hidden"
-                  aria-label="Upload logo light"
                 />
               </label>
-            </div>
-            <p className="mt-1 text-center text-xs text-body dark:text-bodydark">
-              Light Logo
-            </p>
-          </div>
 
-          {/* Dark Logo */}
-          <div className="w-24">
-            <div className="h-24 relative group">
-              <label
-                htmlFor="logoDark"
-                className="flex items-center justify-center w-full h-full border-2 border-dashed border-primary rounded-lg cursor-pointer bg-primary/5 dark:bg-primary/10 hover:border-primary transition-colors"
-              >
-                <div className="relative w-full h-full flex items-center justify-center">
-                  {(logoDarkPreview === null || logoDarkPreview === undefined) && (
-                    <span
-                      style={{ fontSize: "40px", color: "#3C50E0", zIndex: 10 }}
-                    >
-                      +
-                    </span>
-                  )}
-                  {logoDarkPreview && (
+              <div className="mt-3">
+                <p className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <FiImage className="w-4 h-4" />
+                  Preview:
+                </p>
+                {preview ? (
+                  <div
+                    className={`relative w-full h-24 rounded-lg p-2 border flex items-center justify-center ${
+                      type === "light"
+                        ? "bg-white border-gray-300"
+                        : "bg-gray-900 border-gray-700"
+                    }`}
+                  >
                     <img
-                      src={logoDarkPreview}
-                      alt="Dark Logo"
-                      className="absolute top-0 left-0 w-full h-full object-contain rounded-lg bg-white dark:bg-slate-800"
-                      onError={(e) => (e.currentTarget.style.display = "none")}
+                      src={preview}
+                      alt={`${label} Preview`}
+                      className="max-w-full max-h-full object-contain"
                     />
-                  )}
-                </div>
-                <input
-                  type="file"
-                  name="logoDark"
-                  id="logoDark"
-                  accept="image/png,image/svg+xml"
-                  onChange={(e) => handleFileChange(e, "dark")}
-                  className="hidden"
-                  aria-label="Upload logo dark"
-                />
-              </label>
+                  </div>
+                ) : (
+                  <div className="h-24 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+                    <span className="text-gray-500 dark:text-gray-400">
+                      No file selected
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
-            <p className="mt-1 text-center text-xs text-body dark:text-bodydark">
-              Dark Logo
-            </p>
-          </div>
+          ))}
         </div>
 
         {/* Submit */}
         <button
           type="submit"
           disabled={status === "loading"}
-          className="inline-flex justify-center items-center rounded-md bg-primary px-4 py-2 text-white hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex justify-center items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {status === "loading" ? <Spinner /> : "Save Branding"}
         </button>

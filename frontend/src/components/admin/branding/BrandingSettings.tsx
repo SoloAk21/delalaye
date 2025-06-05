@@ -16,23 +16,26 @@ const BrandingSettings = () => {
     dispatch(fetchBranding());
   }, [dispatch]);
 
-  console.log("Branding Settings:", branding);
-
   return (
-    <div className="shadow p-3 rounded">
-      <h6 className="font-bold text-secondary">Branding Settings</h6>
-      <div className="mt-4">
+    <div className="p-4 pl-4 md:p-6 bg-whiten dark:bg-boxdark-2 min-h-screen">
+      <h6 className="text-lg font-semibold text-body dark:text-bodydark mb-4">
+        Branding Settings
+      </h6>
+
+      <div className="mt-5">
         {status === "loading" ? (
-          <Spinner />
+          <div className="flex justify-center items-center h-64">
+            <Spinner />
+          </div>
         ) : branding ? (
-          <div className="bg-white dark:bg-boxdark rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-8 space-y-6 max-w-4xl mx-auto">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                Current Branding
+          <div className="bg-white dark:bg-boxdark rounded-xl shadow-md p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                Current Branding Configuration
               </h3>
               <button
                 onClick={() => setOpenUpdatePopup(true)}
-                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-4 rounded-lg text-sm transition"
+                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg text-sm transition"
                 aria-label="Update Branding"
               >
                 <Pencil className="w-4 h-4" />
@@ -40,15 +43,15 @@ const BrandingSettings = () => {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Primary Color */}
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">
+              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
                   Primary Color
                 </label>
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-12 h-12 rounded-md border border-gray-300 dark:border-gray-600"
+                    className="w-10 h-10 rounded-md border border-gray-200 dark:border-gray-700"
                     style={{ backgroundColor: branding.primaryColor }}
                   />
                   <span className="text-base font-medium text-gray-900 dark:text-gray-300">
@@ -58,13 +61,13 @@ const BrandingSettings = () => {
               </div>
 
               {/* Secondary Color */}
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">
+              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
                   Secondary Color
                 </label>
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-12 h-12 rounded-md border border-gray-300 dark:border-gray-600"
+                    className="w-10 h-10 rounded-md border border-gray-200 dark:border-gray-700"
                     style={{ backgroundColor: branding.secondaryColor }}
                   />
                   <span className="text-base font-medium text-gray-900 dark:text-gray-300">
@@ -74,8 +77,8 @@ const BrandingSettings = () => {
               </div>
 
               {/* Dark Mode Default */}
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">
+              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
                   Dark Mode Default
                 </label>
                 <span className="text-base font-medium text-gray-900 dark:text-gray-300">
@@ -84,40 +87,52 @@ const BrandingSettings = () => {
               </div>
 
               {/* Logo Light */}
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">
-                  Logo Light
+              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                  Light Logo
                 </label>
                 {branding.logoLight ? (
-                  <img
-                    src={branding.logoLight}
-                    alt="Light Logo"
-                    className="h-16 object-contain rounded-md border border-gray-300 dark:border-gray-600 p-1 bg-white dark:bg-gray-800"
-                  />
+                  <div className="flex justify-center items-center h-20 bg-white  rounded-md border border-gray-200 dark:border-gray-700 p-2">
+                    <img
+                      src={branding.logoLight}
+                      alt="Light Logo"
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  </div>
                 ) : (
-                  <span className="text-sm text-gray-400">No logo uploaded</span>
+                  <span className="text-sm text-gray-400 dark:text-gray-500">
+                    No logo uploaded
+                  </span>
                 )}
               </div>
 
               {/* Logo Dark */}
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">
-                  Logo Dark
+              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                  Dark Logo
                 </label>
                 {branding.logoDark ? (
-                  <img
-                    src={branding.logoDark}
-                    alt="Dark Logo"
-                    className="h-16 object-contain rounded-md border border-gray-300 dark:border-gray-600 p-1 bg-white dark:bg-gray-800"
-                  />
+                  <div className="flex justify-center items-center h-20 bg-gray-900 rounded-md border border-gray-200 dark:border-gray-700 p-2">
+                    <img
+                      src={branding.logoDark}
+                      alt="Dark Logo"
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  </div>
                 ) : (
-                  <span className="text-sm text-gray-400">No logo uploaded</span>
+                  <span className="text-sm text-gray-400 dark:text-gray-500">
+                    No logo uploaded
+                  </span>
                 )}
               </div>
             </div>
           </div>
         ) : (
-          <div className="text-center py-6">No branding settings found.</div>
+          <div className="bg-white dark:bg-boxdark rounded-xl shadow-md p-6 text-center py-8">
+            <span className="text-gray-500 dark:text-gray-400">
+              No branding settings found.
+            </span>
+          </div>
         )}
       </div>
 

@@ -19,9 +19,10 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="p-4 pl-4 md:p-6 bg-whiten dark:bg-boxdark-2 min-h-screen">
-      <h4 className="text-xl font-medium text-secondary dark:text-bodydark">
+      <h6 className="text-lg font-semibold text-body dark:text-bodydark mb-4">
         Welcome, {user?.fullName}
-      </h4>
+      </h6>
+
       {status === "loading" ? (
         <div
           role="status"

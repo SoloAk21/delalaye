@@ -13,10 +13,10 @@ import { motion } from "framer-motion";
 
 const Services: React.FC = () => {
   return (
-    <div className="p-4 sm:p-6 bg-white dark:bg-boxdark rounded-xl shadow-md min-h-screen">
-      <h6 className="text-lg font-bold text-body dark:text-bodydark mb-4">
+    <div className="p-4 md:p-6 bg-whiten dark:bg-boxdark-2 min-h-screen">
+      <h1 className="text-xl font-medium text-secondary dark:text-bodydark mb-4">
         Services
-      </h6>
+      </h1>
       <ServicesList />
     </div>
   );
@@ -59,15 +59,15 @@ const ServicesList: React.FC = () => {
   };
 
   return (
-    <>
-      <div className="flex flex-col  sm:flex-row justify-between items-center gap-4 mb-4">
+    <div className="bg-white dark:bg-boxdark rounded-xl shadow-md p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-6">
         <div className="w-full sm:w-64">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search services..."
-            className="w-full py-2 px-4 border border-stroke dark:border-strokedark rounded-md text-body dark:text-bodydark bg-white dark:bg-boxdark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary text-sm"
+            className="w-full py-2 px-4 border border-stroke dark:border-strokedark rounded-md text-sm text-body dark:text-bodydark bg-white dark:bg-boxdark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
           />
         </div>
         <motion.button
@@ -76,25 +76,28 @@ const ServicesList: React.FC = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <MdAdd size={20} /> Add Service
+          <MdAdd size={20} />
+          Add Service
         </motion.button>
       </div>
 
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg bg-white dark:bg-boxdark">
+      <div className="relative overflow-x-auto">
         <table className="w-full text-sm text-left text-body dark:text-bodydark">
           <thead className="bg-whiten dark:bg-boxdark-2">
             <tr>
-              <th className="px-6 py-3 text-xs font-semibold">No</th>
-              <th className="px-6 py-3 text-xs font-semibold">Service Name</th>
-              <th className="px-6 py-3 text-xs font-semibold">Service Rate</th>
-              <th className="px-6 py-3 text-xs font-semibold">Action</th>
+              <th className="px-4 py-3 font-medium">No</th>
+              <th className="px-4 py-3 font-medium">Service Name</th>
+              <th className="px-4 py-3 font-medium">Service Rate</th>
+              <th className="px-4 py-3 font-medium">Action</th>
             </tr>
           </thead>
           <tbody>
             {status === "loading" ? (
               <tr>
-                <td colSpan={4} className="py-6 text-center">
-                  <Spinner width="30px" />
+                <td colSpan={4} className="py-8 text-center">
+                  <div className="flex justify-center">
+                    <Spinner width="30px" />
+                  </div>
                 </td>
               </tr>
             ) : paginatedServices.length ? (
@@ -103,15 +106,15 @@ const ServicesList: React.FC = () => {
                   key={service.id}
                   className="border-b border-stroke dark:border-strokedark hover:bg-primary/5"
                 >
-                  <td className="px-6 py-4 text-xs">
+                  <td className="px-4 py-3">
                     {(currentPage - 1) * usersPerPage + index + 1}
                   </td>
-                  <td className="px-6 py-4 text-xs">{service.name}</td>
-                  <td className="px-6 py-4 text-xs">{service.serviceRate}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-3">{service.name}</td>
+                  <td className="px-4 py-3">{service.serviceRate}</td>
+                  <td className="px-4 py-3">
                     <motion.button
                       onClick={() => openInPopup(service)}
-                      className="bg-primary text-white px-3 py-1.5 text-xs rounded-md hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 transition-colors"
+                      className="bg-primary text-white px-3 py-1 rounded-md text-sm font-medium hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 transition-colors"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -124,7 +127,7 @@ const ServicesList: React.FC = () => {
               <tr>
                 <td
                   colSpan={4}
-                  className="py-6 text-center text-body dark:text-bodydark"
+                  className="py-8 text-center text-sm text-body dark:text-bodydark"
                 >
                   No services registered.
                 </td>
@@ -134,11 +137,11 @@ const ServicesList: React.FC = () => {
         </table>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4">
-        <div className="flex items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-6">
+        <div className="flex items-center gap-2">
           <label
             htmlFor="usersPerPage"
-            className="text-body dark:text-bodydark text-xs mr-2"
+            className="text-sm text-body dark:text-bodydark"
           >
             Lists Per Page:
           </label>
@@ -159,9 +162,9 @@ const ServicesList: React.FC = () => {
           <motion.button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-3 py-2 rounded-md ${
+            className={`px-3 py-2 rounded-md text-sm ${
               currentPage === 1
-                ? "bg-gray-200 dark:bg-strokedark text-gray-600 dark:text-gray-400 cursor-not-allowed"
+                ? "bg-gray-200 dark:bg-strokedark text-gray-400 dark:text-gray-400 cursor-not-allowed"
                 : "bg-primary text-white hover:bg-primary/90"
             }`}
             whileHover={{ scale: currentPage === 1 ? 1 : 1.05 }}
@@ -170,8 +173,7 @@ const ServicesList: React.FC = () => {
             <FaArrowLeft size={12} />
           </motion.button>
           {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-            const page = currentPage + i;
-            if (page > totalPages) return null;
+            const page = i + 1;
             return (
               <motion.button
                 key={page}
@@ -191,9 +193,9 @@ const ServicesList: React.FC = () => {
           <motion.button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-3 py-2 rounded-md ${
+            className={`px-3 py-2 rounded-md text-sm ${
               currentPage === totalPages
-                ? "bg-gray-200 dark:bg-strokedark text-gray-600 dark:text-gray-400 cursor-not-allowed"
+                ? "bg-gray-200 dark:bg-strokedark text-gray-400 dark:text-gray-400 cursor-not-allowed"
                 : "bg-primary text-white hover:bg-primary/90"
             }`}
             whileHover={{ scale: currentPage === totalPages ? 1 : 1.05 }}
@@ -219,7 +221,7 @@ const ServicesList: React.FC = () => {
           />
         </Popup>
       )}
-    </>
+    </div>
   );
 };
 

@@ -9,8 +9,8 @@ import { motion } from "framer-motion";
 const Header: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
-  const [open, setOpen] = useState<boolean>(false);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+  const [open, setOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedMode = localStorage.getItem("darkMode");
     if (savedMode !== null) {
       return JSON.parse(savedMode);
@@ -31,12 +31,18 @@ const Header: React.FC = () => {
   }, [isDarkMode]);
 
   const toggleDarkMode = () => {
-    setIsDarkMode((prev) => !prev);
+    setIsDarkMode((prev: boolean) => !prev);
   };
 
   return (
     <header className="bg-white dark:bg-boxdark h-16 w-full shadow-md flex items-center justify-end px-6 mb-3 z-50">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
+        <button
+          onClick={toggleDarkMode}
+          className="text-body dark:text-bodydark hover:text-primary dark:hover:text-primary transition-colors"
+        >
+          {isDarkMode ? <BsSun size={20} /> : <BsMoonStars size={20} />}
+        </button>
         <p className="text-sm font-medium text-body dark:text-bodydark">
           {user?.fullName}
         </p>
@@ -49,6 +55,7 @@ const Header: React.FC = () => {
           >
             <FaRegUserCircle size={24} />
           </motion.button>
+
           <motion.div
             id="dropdown"
             className={`absolute right-0 top-10 z-50 w-44 bg-white dark:bg-boxdark border border-stroke dark:border-strokedark rounded-lg shadow-lg divide-y divide-stroke dark:divide-strokedark ${
@@ -59,15 +66,6 @@ const Header: React.FC = () => {
             transition={{ duration: 0.2 }}
           >
             <ul className="py-2 text-sm text-body dark:text-bodydark">
-              <li>
-                <button
-                  onClick={toggleDarkMode}
-                  className="w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors"
-                >
-                  {isDarkMode ? <BsSun size={16} /> : <BsMoonStars size={16} />}
-                  {isDarkMode ? "Light Mode" : "Dark Mode"}
-                </button>
-              </li>
               <li>
                 <button
                   onClick={() => dispatch(logout())}
@@ -84,9 +82,7 @@ const Header: React.FC = () => {
   );
 };
 
-/**
- * Hook to detect clicks outside of the passed ref
- */
+// Hook to detect outside click
 function useOutsideAlerter(
   ref: React.RefObject<HTMLElement>,
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
